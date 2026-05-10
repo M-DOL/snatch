@@ -1,0 +1,4 @@
+node_modules/
+.partykit/state/
+.env
+.DS_Store

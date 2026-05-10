@@ -1,0 +1,9 @@
+{
+  "name": "snatch",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx partykit dev",
+    "deploy": "npx partykit deploy"
+  },
+  "devDependencies": { "partykit": "latest" }
+}

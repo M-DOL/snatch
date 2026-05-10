@@ -1,0 +1,6 @@
+{
+  "name": "snatch",
+  "main": "server.js",
+  "compatibilityDate": "2023-12-01",
+  "serve": "public"
+}

@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Snatch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0d0a06;--surface:#161108;--surface2:#1e1710;--surface3:#261f14;
+  --border:rgba(255,210,100,0.1);--border2:rgba(255,210,100,0.28);
+  --gold:#f0c040;--gold2:#c8922a;--gold-dim:rgba(240,192,64,0.12);
+  --red2:#ff6b5b;--red-dim:rgba(255,107,91,0.12);
+  --text:#f0e8d8;--muted:#8a7a60;--success:#a8e063;--success-dim:rgba(168,224,99,0.1);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;
+  background-image:radial-gradient(ellipse at 15% 0%,rgba(240,192,64,0.07) 0%,transparent 55%),radial-gradient(ellipse at 85% 100%,rgba(192,57,43,0.07) 0%,transparent 55%);}
+
+.screen{display:none;} .screen.active{display:block;animation:fadeIn .25s ease forwards;} #screen-submit.active{display:flex;}
+.full-screen{display:none;flex-direction:column;height:100vh;overflow:hidden;} .full-screen.active{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.center-wrap{max-width:520px;margin:0 auto;padding:2rem 1rem 3rem;width:100%;overflow-y:auto;height:100vh;}
+
+.logo{font-family:'Cinzel Decorative',serif;font-size:46px;color:var(--gold);line-height:1;text-shadow:0 0 60px rgba(240,192,64,0.3);margin-bottom:4px;}
+.logo.sm{font-size:26px;margin-bottom:2px;}
+.tagline{font-size:11px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:2rem;}
+.tagline.sm{margin-bottom:1.25rem;}
+.card-title{font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);margin-bottom:1rem;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:.75rem;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(240,192,64,0.28),transparent);}
+.card.compact{padding:.75rem 1.25rem;}
+
+label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:5px;margin-top:.85rem;}
+label:first-of-type{margin-top:0;}
+input[type=text],select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:8px 12px;outline:none;transition:border-color .2s;}
+input[type=text]:focus,select:focus{border-color:rgba(240,192,64,.5);}
+input::placeholder{color:var(--muted);} select option{background:#1e1710;}
+input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!important;color:var(--success);pointer-events:none;}
+
+.vi-wrap{position:relative;margin-bottom:6px;}
+.vi-wrap input{padding-right:34px;}
+.vi-wrap .vi{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:14px;opacity:0;transition:opacity .12s;pointer-events:none;}
+.vi-wrap.valid .vi{opacity:1;color:var(--success);}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:#0d0a06;border:none;border-radius:9px;font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:.5px;padding:11px 22px;cursor:pointer;transition:transform .12s,box-shadow .12s;width:100%;margin-top:.85rem;box-shadow:0 0 24px rgba(240,192,64,.18);}
+.btn:hover{transform:scale(1.015);box-shadow:0 0 36px rgba(240,192,64,.32);} .btn:active{transform:scale(.96);}
+.btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border);box-shadow:none;font-family:'DM Sans',sans-serif;font-size:13px;}
+.btn.ghost:hover{border-color:var(--border2);} .btn.sm{padding:6px 13px;font-size:11px;margin-top:0;width:auto;}
+
+.room-code{font-family:'Cinzel Decorative',serif;font-size:40px;color:var(--gold);text-align:center;padding:.9rem;background:var(--surface2);border-radius:10px;margin:.5rem 0;letter-spacing:10px;text-shadow:0 0 40px rgba(240,192,64,.4);cursor:pointer;}
+.room-code:hover{background:var(--surface3);}
+.player-list{list-style:none;display:flex;flex-wrap:wrap;gap:7px;margin-top:.5rem;}
+.player-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 13px;font-size:12px;display:flex;align-items:center;gap:5px;}
+.player-chip.host::after{content:'♛';color:var(--gold);font-size:9px;margin-left:2px;} .player-chip.you{border-color:rgba(240,192,64,.35);color:var(--gold);}
+.power-row{display:flex;gap:9px;margin:.85rem 0 .2rem;}
+.power-btn{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center;color:var(--muted);}
+.power-btn:hover:not(:disabled){border-color:var(--border2);color:var(--text);}
+.power-btn.dragon-on{border-color:rgba(240,192,64,.5);color:var(--gold);background:var(--gold-dim);}
+.power-btn.heist-on{border-color:rgba(255,107,91,.5);color:var(--red2);background:var(--red-dim);}
+.power-btn:disabled{opacity:.2;cursor:not-allowed;}
+.power-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.power-name{font-family:'Cinzel Decorative',serif;font-size:11px;} .power-desc{font-size:10px;margin-top:2px;opacity:.6;}
+.or-divider{text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;margin:.75rem 0;text-transform:uppercase;}
+.error-msg{color:var(--red2);font-size:12px;margin-top:6px;min-height:16px;}
+.muted-text{color:var(--muted);font-size:12px;}
+.submitted-banner{background:var(--success-dim);border:1px solid rgba(168,224,99,.22);border-radius:10px;padding:.8rem 1.25rem;color:var(--success);font-size:13px;margin-top:.75rem;}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(240,192,64,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.dot-pulse{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:dpulse 1.5s ease infinite;flex-shrink:0;}
+@keyframes dpulse{0%,100%{opacity:.25;}50%{opacity:1;}}
+.final-winner{font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);text-align:center;margin:.75rem 0 1.25rem;text-shadow:0 0 40px rgba(240,192,64,.5);line-height:1.4;}
+.conn-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:7px 14px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);flex-shrink:0;}
+.conn-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);transition:background .3s;} .conn-dot.on{background:var(--success);}
+.cat-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:10px;color:var(--muted);}
+.cat-preview{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;max-height:60px;overflow:hidden;}
+.score-table{width:100%;border-collapse:collapse;}
+.score-table th{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);text-align:left;padding:4px 7px;border-bottom:1px solid var(--border);}
+.score-table td{padding:7px;font-size:12px;border-bottom:1px solid var(--border);}
+.score-table tr:last-child td{border-bottom:none;}
+.score-num{font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold);}
+.pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 10px;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.pill.gold{border-color:rgba(240,192,64,.35);color:var(--gold);}
+
+/* SUBMIT */
+.submit-top-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.category-big{font-family:'Cinzel Decorative',serif;font-size:15px;color:var(--gold);flex:1;text-align:center;}
+.my-coins-badge{font-family:'Cinzel Decorative',serif;font-size:14px;color:var(--gold);white-space:nowrap;}
+.timer-inline{display:flex;align-items:center;gap:6px;}
+.timer-ring-sm{position:relative;width:36px;height:36px;flex-shrink:0;}
+.timer-ring-sm svg{transform:rotate(-90deg);}
+.timer-ring-sm .track{fill:none;stroke:var(--surface2);stroke-width:4;}
+.timer-ring-sm .fill{fill:none;stroke:var(--gold);stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .85s linear,stroke .4s;}
+.timer-ring-sm .fill.urgent{stroke:var(--red2);}
+.timer-num-sm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);}
+.timer-num-sm.urgent{color:var(--red2);}
+.timer-ring-sm.pulse{animation:tpulse .4s ease;}
+@keyframes tpulse{0%{transform:scale(1);}50%{transform:scale(1.15);}100%{transform:scale(1);}}
+
+/* REVEAL — 3 ROW */
+.reveal-screen{display:none;flex-direction:column;height:100vh;overflow:hidden;}
+.reveal-screen.active{display:flex;}
+.reveal-topbar{background:var(--surface);border-bottom:1px solid var(--border2);padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+
+.row1{display:flex;border-bottom:2px solid var(--border2);flex-shrink:0;background:var(--surface);}
+.row1-col{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 6px 10px;border-right:1px solid var(--border);min-width:0;}
+.row1-col:last-child{border-right:none;}
+.row1-name{font-size:clamp(11px,2vw,16px);font-weight:500;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.row1-name.you{color:var(--gold);}
+.row1-score{font-family:'Cinzel Decorative',serif;font-size:clamp(13px,2.5vw,22px);color:var(--gold);text-align:center;line-height:1.2;margin-bottom:2px;}
+.row1-delta{font-size:11px;color:var(--success);text-align:center;min-height:14px;opacity:0;transition:opacity .3s;}
+.row1-delta.show{opacity:1;}
+.row1-bags{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:flex-end;margin-top:6px;min-height:36px;}
+
+.row2{display:none;}
+
+.row3{flex:1;display:flex;align-items:flex-start;position:relative;background:var(--bg);overflow:hidden;}
+.row3-col{flex:1;display:flex;flex-direction:row;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:2px;padding:8px 2px;border-right:1px solid var(--border);min-width:0;position:relative;min-height:100%;}
+.row3-col:last-child{border-right:none;}
+/* locked answer chip */
+.locked-chip{display:flex;align-items:center;gap:8px;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.45);border-radius:8px;padding:9px 14px;margin-bottom:6px;color:var(--success);font-size:15px;font-weight:500;}
+.locked-chip-icon{font-size:13px;opacity:.7;flex-shrink:0;}
+.locked-chip-text{flex:1;}
+.chip-pop{animation:chipPop .3s cubic-bezier(.36,.07,.19,.97) both;}
+@keyframes chipPop{0%{transform:scale(.85);opacity:0;}60%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;}}
+
+.event-label-global{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold);white-space:nowrap;background:var(--surface);border:1px solid rgba(240,192,64,.35);border-radius:8px;padding:5px 16px;z-index:2;pointer-events:none;}
+
+.reveal-controls{background:var(--surface);border-top:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+
+.dbag{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dbag.sz-lg{width:52px;height:52px;} .dbag.sz-md{width:40px;height:40px;} .dbag.sz-sm{width:32px;height:32px;}
+.dbag.slam{animation:bagSlam .7s cubic-bezier(.36,.07,.19,.97) both;}
+@keyframes bagSlam{0%{transform:translateY(-30px) scale(1);}55%{transform:translateY(5px) scale(1.12,.88);}80%{transform:translateY(-3px) scale(.96,1.04);}100%{transform:translateY(0) scale(1);}}
+.dbag.kept-anim{animation:bagKept .6s ease both;}
+@keyframes bagKept{0%{transform:scale(1);}35%{transform:scale(1.35);}65%{transform:scale(.92);}100%{transform:scale(1);}}
+.dbag.gone{opacity:0!important;}
+.flying-bag{position:fixed;pointer-events:none;z-index:9998;width:52px;height:52px;}
+#coin-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
+
+/* TEST */
+.test-header{background:var(--surface);border-bottom:1px solid var(--border2);padding:8px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;}
+.test-panels{display:flex;flex:1;overflow-x:auto;overflow-y:hidden;}
+.test-panel{flex:1;min-width:280px;max-width:400px;border-right:1px solid var(--border);overflow-y:auto;padding:1rem .9rem;}
+.test-panel:last-child{border-right:none;}
+.test-panel-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:.85rem;display:flex;align-items:center;gap:7px;}
+.host-badge{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(240,192,64,.3);border-radius:20px;padding:2px 7px;font-size:9px;letter-spacing:1px;}
+</style>
+</head>
+<body>
+<canvas id="coin-canvas"></canvas>
+
+<div class="conn-bar" id="conn-bar" style="display:none;">
+  <span class="conn-dot" id="conn-dot"></span><span id="conn-label">Connecting...</span>
+  <span style="flex:1"></span>
+  <span id="conn-room" style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);letter-spacing:3px;"></span>
+</div>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="center-wrap">
+    <div class="logo">Snatch</div>
+    <div class="tagline">Hoard it. Name it. Take it.</div>
+    <div style="display:flex;justify-content:center;gap:14px;margin-bottom:1.5rem;" id="home-bags"></div>
+    <div class="card">
+      <div class="card-title">Open a Vault</div>
+      <label>Your Name</label><input type="text" id="host-name" placeholder="Enter your name" maxlength="20"/>
+      <label>Coin Goal</label>
+      <select id="coin-goal-select">
+        <option value="500">500 coins</option><option value="1000" selected>1,000 coins</option>
+        <option value="2000">2,000 coins</option><option value="3000">3,000 coins</option>
+      </select>
+      <div class="muted-text" style="margin-top:5px;">Each uncontested hoard = 100 coins. Category chosen randomly each round.</div>
+      <button class="btn" onclick="createGame()">Open the Vault</button>
+      <button class="btn ghost" onclick="enterTestMode()" style="margin-top:7px;">🧪 Test Mode</button>
+    </div>
+    <div class="or-divider">— or —</div>
+    <div class="card">
+      <div class="card-title">Join a Vault</div>
+      <label>Your Name</label><input type="text" id="join-name" placeholder="Enter your name" maxlength="20"/>
+      <label>Vault Code</label>
+      <input type="text" id="join-code" placeholder="XKQZ" maxlength="4"
+        style="text-transform:uppercase;letter-spacing:8px;font-family:'Cinzel Decorative',serif;font-size:22px;text-align:center;"/>
+      <button class="btn ghost" onclick="joinGame()">Enter the Vault</button>
+      <div class="error-msg" id="join-error"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div class="screen" id="screen-lobby">
+  <div class="center-wrap">
+    <div class="logo sm">Snatch</div><div class="tagline sm">Waiting for thieves...</div>
+    <div class="card"><div class="card-title">Vault Code</div>
+      <div class="room-code" id="lobby-code" onclick="copyCode()"></div>
+      <div class="muted-text" style="text-align:center;margin-top:5px;">Click to copy · Share with your crew</div>
+    </div>
+    <div class="card"><div class="card-title">Thieves</div>
+      <ul class="player-list" id="lobby-players"></ul>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:10px;"><div class="dot-pulse"></div><span class="muted-text" id="lobby-ticker">Waiting...</span></div>
+      <div class="error-msg" id="lobby-error"></div>
+      <button class="btn" id="start-btn" onclick="startGame()" style="display:none">Begin the Heist</button>
+      <div class="muted-text" id="lobby-wait-msg" style="margin-top:8px;text-align:center;display:none;">Waiting for host to start...</div>
+    </div>
+    <div class="card compact">
+      <span class="muted-text">Goal: <span id="lobby-goal" style="color:var(--text)"></span> coins &nbsp;·&nbsp; Category revealed each round</span>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT -->
+<div class="screen" id="screen-submit" style="flex-direction:column;height:100vh;">
+  <div class="submit-top-bar" id="submit-top-bar">
+    <div class="timer-inline">
+      <div class="timer-ring-sm" id="timer-ring">
+        <svg width="36" height="36" viewBox="0 0 36 36">
+          <circle class="track" cx="18" cy="18" r="14"/>
+          <circle class="fill" id="timer-arc" cx="18" cy="18" r="14" stroke-dasharray="88" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-num-sm" id="timer-num">30</div>
+      </div>
+    </div>
+    <div class="category-big" id="sub-category-big"></div>
+    <div class="my-coins-badge">⬡ <span id="sub-my-score">0</span></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;">
+    <div style="max-width:520px;margin:0 auto;padding:1rem 1rem 3rem;">
+      <div class="card">
+        <div class="power-row">
+          <button class="power-btn" id="dragon-btn" onclick="toggleDragon()">
+            <div class="power-label">One-time</div><div class="power-name">Dragon's Hoard</div><div class="power-desc">Hoard 3</div>
+          </button>
+          <button class="power-btn" id="heist-btn" onclick="toggleHeist()">
+            <div class="power-label">One-time</div><div class="power-name">Heist</div><div class="power-desc">Snatch 3</div>
+          </button>
+        </div>
+        <div style="margin-top:1rem;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:.5rem;">Hoard</div>
+        <div id="hoard-inputs"></div>
+        <div style="margin-top:.85rem;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:.5rem;">Snatch</div>
+        <div id="snatch-inputs"></div>
+        <div class="error-msg" id="submit-error"></div>
+        <button class="btn" id="submit-btn" onclick="submitMove()" style="margin-top:1rem">Hoard &amp; Snatch</button>
+      </div>
+      <div class="submitted-banner" id="submitted-banner" style="display:none;">
+        ✦ Treasures locked in.
+        <div id="submitted-bags" style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;"></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:7px;" id="wait-ticker"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REVEAL -->
+<div class="reveal-screen" id="screen-reveal">
+  <div class="reveal-topbar">
+    <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);">Snatch</div>
+    <div class="pill gold" id="rev-category-pill"></div>
+    <div class="pill">Round <span id="rev-round-num"></span></div>
+    <div style="flex:1;height:2px;background:var(--surface2);border-radius:2px;overflow:hidden;margin:0 8px;">
+      <div style="height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));border-radius:2px;transition:width .6s;" id="rev-progress"></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);">Goal: <span id="rev-goal" style="color:var(--gold);font-family:'Cinzel Decorative',serif;font-size:13px;"></span></div>
+  </div>
+  <div class="row1" id="row1"></div>
+  <div class="row2" id="row2"></div>
+  <div class="row3" id="row3"></div>
+  <div class="reveal-controls">
+    <div class="muted-text" style="flex:1;" id="reveal-status"></div>
+    <button class="btn sm" id="reveal-next-btn" onclick="sendRevealNext()" style="display:none;">Reveal Next →</button>
+    <div id="reveal-waiting-msg" style="display:none;font-size:12px;color:var(--muted);align-items:center;gap:7px;"><span class="spinner"></span> Waiting for host</div>
+    <button class="btn sm" id="next-round-btn" onclick="nextRound()" style="display:none;">Next Round →</button>
+    <button class="btn ghost sm" id="waiting-next-btn" style="display:none;cursor:default;"><span class="spinner"></span> Waiting...</button>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="screen" id="screen-final">
+  <div class="center-wrap">
+    <div class="logo sm">Snatch</div><div class="tagline sm">The vault is empty.</div>
+    <div style="display:flex;justify-content:center;gap:14px;margin-bottom:1.25rem;" id="final-bags"></div>
+    <div class="card">
+      <div class="card-title" style="text-align:center;">Final Standings</div>
+      <div class="final-winner" id="final-winner"></div>
+      <table class="score-table" id="final-score-table"></table>
+    </div>
+    <button class="btn" onclick="resetToHome()">Crack Another Vault</button>
+  </div>
+</div>
+
+<!-- TEST MODE -->
+<div class="full-screen" id="screen-test">
+  <div class="test-header">
+    <div style="font-family:'Cinzel Decorative',serif;font-size:15px;color:var(--gold);">Snatch</div>
+    <div class="pill gold">🧪 Test</div>
+    <div class="pill">Round <span id="t-round">1</span></div>
+    <div class="pill gold" style="font-size:11px;letter-spacing:0;">📦 <span id="t-category">—</span></div>
+    <div class="pill">Hoarded: <span id="t-hoarded">0</span>/<span id="t-goal">1000</span></div>
+    <div class="pill">Phase: <span id="t-phase">Submitting</span></div>
+    <div style="flex:1;"></div>
+    <button class="btn ghost sm" onclick="resetToHome()">Exit</button>
+    <button class="btn sm" id="t-action-btn" onclick="testAction()">Reveal Round</button>
+  </div>
+  <div class="test-panels" id="test-panels"></div>
+</div>
+
+<script>
+const CATEGORIES={
+  "Fruits":["Apple","Banana","Mango","Strawberry","Grape","Pineapple","Watermelon","Peach","Cherry","Kiwi","Lemon","Lime","Coconut","Blueberry","Raspberry","Papaya","Plum","Pomegranate","Fig","Apricot","Lychee","Guava","Passion Fruit","Dragon Fruit","Cantaloupe"],
+  "Seasons of Survivor":["Borneo","Australian Outback","Africa","Marquesas","Thailand","The Amazon","Pearl Islands","Vanuatu","Palau","Guatemala","Panama","Cook Islands","Fiji","China","Micronesia","Gabon","Tocantins","Samoa","Nicaragua","Redemption Island","South Pacific","Philippines","Caramoan","Blood vs Water","Cagayan","San Juan del Sur","Worlds Apart","Cambodia","Kaoh Rong","Millennials vs Gen X","Game Changers","HHH","Ghost Island","David vs Goliath","Edge of Extinction","Island of the Idols","Winners at War"],
+  "Countries in North America":["United States","Canada","Mexico","Guatemala","Belize","Honduras","El Salvador","Nicaragua","Costa Rica","Panama","Cuba","Jamaica","Haiti","Dominican Republic","Bahamas","Barbados","Trinidad and Tobago","Grenada","Saint Lucia","Antigua and Barbuda","Dominica","Saint Vincent","Saint Kitts and Nevis"],
+  "Disney Animated Characters 90s":["Ariel","Simba","Aladdin","Jasmine","Belle","Beast","Pocahontas","Mulan","Tarzan","Hercules","Hades","Jafar","Scar","Timon","Pumbaa","Genie","Nala","Mufasa","Ursula","Gaston","Lumiere","Cogsworth","Mrs Potts","Flounder","Sebastian","Iago","Zazu","Rafiki","Mushu","Phil"],
+  "US States":["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"],
+  "Olympic Sports":["Swimming","Athletics","Gymnastics","Cycling","Rowing","Sailing","Boxing","Wrestling","Judo","Fencing","Shooting","Archery","Equestrian","Triathlon","Weightlifting","Volleyball","Basketball","Soccer","Tennis","Badminton","Table Tennis","Handball","Hockey","Rugby Sevens","Skateboarding","Surfing","Sport Climbing","Baseball"],
+  "Famous Scientists":["Einstein","Newton","Darwin","Curie","Tesla","Hawking","Galileo","Feynman","Turing","Edison","Faraday","Maxwell","Bohr","Pasteur","Mendel","Lavoisier","Kepler","Copernicus","Archimedes","Oppenheimer","Planck","Heisenberg","Schrodinger","Lovelace","Noether"],
+  "Dog Breeds":["Labrador","Golden Retriever","German Shepherd","Bulldog","Poodle","Beagle","Rottweiler","Yorkshire Terrier","Boxer","Dachshund","Siberian Husky","Great Dane","Doberman","Shih Tzu","Chihuahua","Border Collie","Pomeranian","Maltese","Cocker Spaniel","Dalmatian","Greyhound","Pug","Samoyed","Akita","Weimaraner"],
+  "World Capitals":["Paris","Tokyo","London","Berlin","Rome","Madrid","Beijing","Moscow","Ottawa","Canberra","Brasilia","Cairo","New Delhi","Buenos Aires","Seoul","Mexico City","Jakarta","Ankara","Nairobi","Bangkok","Lisbon","Vienna","Warsaw","Stockholm","Oslo","Copenhagen","Helsinki","Athens","Prague","Budapest"],
+  "Movies from the 2000s":["The Dark Knight","Inception","Avatar","The Lord of the Rings","Finding Nemo","Gladiator","Shrek","Pirates of the Caribbean","Harry Potter","Spider-Man","Ratatouille","Wall-E","Up","No Country for Old Men","There Will Be Blood","Eternal Sunshine","Brokeback Mountain","Crash","Million Dollar Baby","Chicago","A Beautiful Mind","Memento","Cast Away"],
+  "Card Games":["Poker","Blackjack","Rummy","Bridge","Solitaire","Go Fish","War","Uno","Crazy Eights","Snap","Hearts","Spades","Cribbage","Canasta","Pinochle","Baccarat","Old Maid","Concentration","Speed","Slapjack"],
+  "Taylor Swift Albums":["Taylor Swift","Fearless","Speak Now","Red","1989","Reputation","Lover","Folklore","Evermore","Midnights"],
+  "NBA Teams":["Lakers","Celtics","Bulls","Warriors","Heat","Knicks","Spurs","Nets","Bucks","Suns","Mavericks","Clippers","76ers","Raptors","Nuggets","Cavaliers","Pistons","Trail Blazers","Thunder","Jazz"],
+  "Things in a Kitchen":["Refrigerator","Oven","Microwave","Sink","Dishwasher","Toaster","Blender","Cutting board","Knife","Pan","Pot","Colander","Spatula","Whisk","Measuring cup","Rolling pin","Grater","Peeler","Ladle","Tongs"]
+};
+const CAT_NAMES=Object.keys(CATEGORIES);
+const CAT_SETS={};
+Object.entries(CATEGORIES).forEach(([c,items])=>{CAT_SETS[c]=new Set(items.map(i=>i.toLowerCase()));});
+
+function pickCategory(used=[]){
+  const avail=CAT_NAMES.filter(c=>!used.includes(c));
+  const pool=avail.length>0?avail:CAT_NAMES;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+const PARTYKIT_HOST=location.host;
+const COIN=100;
+const BAG_COLORS=['#c8922a','#a06818','#d4a030','#b07820','#e0a828','#986010','#cc8820','#b06010'];
+
+function lx(h,p){let n=parseInt(h.slice(1),16),r=(n>>16)+p*2.55,g=((n>>8)&255)+p*2.55,b=(n&255)+p*2.55;return'#'+[r,g,b].map(x=>Math.min(255,~~x).toString(16).padStart(2,'0')).join('');}
+function dk(h,p){let n=parseInt(h.slice(1),16),r=(n>>16)-p*2.55,g=((n>>8)&255)-p*2.55,b=(n&255)-p*2.55;return'#'+[r,g,b].map(x=>Math.max(0,~~x).toString(16).padStart(2,'0')).join('');}
+function bagSVG(c='#c8922a',size=52){
+  const l=lx(c,22),d=dk(c,18),d2=dk(c,8);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <g class="dbag-body">
+    <ellipse cx="32" cy="59" rx="17" ry="3.5" fill="rgba(0,0,0,0.25)"/>
+    <path d="M12 38 Q10 52 32 56 Q54 52 52 38 Q50 24 32 24 Q14 24 12 38Z" fill="${c}"/>
+    <path d="M16 40 Q15 51 32 54 Q49 51 48 40 Q47 30 32 30 Q17 30 16 40Z" fill="${l}"/>
+    <ellipse cx="23" cy="35" rx="5" ry="8" fill="rgba(255,255,255,0.09)" transform="rotate(-18,23,35)"/>
+    <path d="M26 24 Q32 20 38 24 L36 28 Q32 26 28 28Z" fill="${d}"/>
+    <ellipse cx="32" cy="22" rx="6" ry="4" fill="${d}"/>
+    <ellipse cx="32" cy="22" rx="4" ry="2.5" fill="${d2}"/>
+    <circle cx="38" cy="43" r="6.5" fill="${l}" opacity="0.3"/>
+    <text x="32" y="47" text-anchor="middle" font-size="13" font-family="serif" font-weight="bold" fill="${d}" opacity="0.7">$</text>
+    <ellipse cx="20" cy="57" rx="5" ry="2.8" fill="#f0c040" stroke="#a06010" stroke-width="0.8"/>
+    <ellipse cx="32" cy="59" rx="5" ry="2.8" fill="#ffd700" stroke="#a06010" stroke-width="0.8"/>
+    <ellipse cx="44" cy="57" rx="5" ry="2.8" fill="#f0c040" stroke="#a06010" stroke-width="0.8"/>
+  </g></svg>`;
+}
+
+const cnv=document.getElementById('coin-canvas');
+const ctx=cnv.getContext('2d');
+let particles=[];let raf=null;
+function resizeCnv(){cnv.width=window.innerWidth;cnv.height=window.innerHeight;}
+window.addEventListener('resize',resizeCnv);resizeCnv();
+function sprayCoins(x,y,n=14){
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=2+Math.random()*5,sz=3+Math.random()*4;
+    particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2.5,sz,life:1,decay:.022+Math.random()*.02,col:Math.random()>.5?'#f0c040':'#ffd700',spin:Math.random()*Math.PI*2,spinV:(Math.random()-.5)*.28});}
+  if(!raf)animP();}
+function animP(){
+  ctx.clearRect(0,0,cnv.width,cnv.height);particles=particles.filter(p=>p.life>0);
+  if(!particles.length){raf=null;return;}
+  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.32;p.vx*=.97;p.life-=p.decay;p.spin+=p.spinV;
+    ctx.save();ctx.globalAlpha=p.life;ctx.translate(p.x,p.y);ctx.rotate(p.spin);
+    ctx.fillStyle=p.col;ctx.strokeStyle='#c8922a';ctx.lineWidth=.7;
+    ctx.beginPath();ctx.ellipse(0,0,p.sz,p.sz*.55,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();});
+  raf=requestAnimationFrame(animP);}
+function elCenter(e){const r=e.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height/2};}
+function elRect(e){return e.getBoundingClientRect();}
+
+function flyBag(fromEl,toEl,colorIdx,onLand){
+  const from=elRect(fromEl),to=elRect(toEl);
+  const sz=64;
+  const fx=from.left+from.width/2-sz/2,fy=from.top+from.height/2-sz/2;
+  const tx=to.left+to.width/2-sz/2,ty=to.top+to.height/2-sz/2;
+  const clone=document.createElement('div');
+  clone.className='flying-bag';
+  clone.style.width=sz+'px';clone.style.height=sz+'px';
+  clone.innerHTML=bagSVG(BAG_COLORS[colorIdx%BAG_COLORS.length],sz);
+  clone.style.cssText=`left:${fx}px;top:${fy}px;width:${sz}px;height:${sz}px;`;
+  document.body.appendChild(clone);
+  const dx=tx-fx,dy=ty-fy;
+  const cpx=fx+dx*.5,cpy=Math.min(fy,ty)-Math.abs(dx)*.5-60;
+  const dur=700,start=performance.now();
+  function step(now){
+    const t=Math.min(1,(now-start)/dur),e=1-(1-t)*(1-t)*(1-t);
+    const bx=(1-e)*(1-e)*fx+2*(1-e)*e*cpx+e*e*tx;
+    const by=(1-e)*(1-e)*fy+2*(1-e)*e*cpy+e*e*ty;
+    clone.style.left=bx+'px';clone.style.top=by+'px';
+    clone.style.transform=`rotate(${e*-35}deg) scale(${1+e*.1})`;
+    if(t<1){requestAnimationFrame(step);}
+    else{
+      clone.style.transition='transform .22s cubic-bezier(.36,.07,.19,.97)';
+      clone.style.transform='scale(1.18,.82) rotate(0deg)';
+      setTimeout(()=>{clone.style.transform='scale(.93,1.07)';setTimeout(()=>{clone.style.transform='scale(1)';setTimeout(()=>{clone.remove();if(onLand)onLand();},100);},100);},120);
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+let ws=null,G=null;
+let myId=uid(),myName='',isHost=false;
+let dragonActive=false,heistActive=false,dragonUsed=false,heistUsed=false;
+let hasSubmitted=false,timerInterval=null;
+let revealedSteps=0,revealPlayerOrder=[];
+let testMode=false,testPlayers=[];
+const testPanelState={};
+let lockedHoards=[],lockedSnatches=[];
+
+function uid(){return Math.random().toString(36).slice(2,9);}
+function el(id){return document.getElementById(id);}
+function norm(s){return s.trim().toLowerCase();}
+
+function showScreen(name){
+  document.querySelectorAll('.screen,.full-screen,.reveal-screen').forEach(s=>s.classList.remove('active'));
+  el('screen-'+name).classList.add('active');
+}
+
+function isValidAnswer(cat,val){return(CAT_SETS[cat]||new Set()).has(norm(val));}
+
+function connect(code,onOpen){
+  const proto=location.protocol==='https:'?'wss':'ws';
+  ws=new WebSocket(`${proto}://${PARTYKIT_HOST}/party/${code}`);
+  el('conn-bar').style.display='flex';el('conn-room').textContent=code;
+  ws.onopen=()=>{setConn(true);if(onOpen)onOpen();};
+  ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.type==='state')handleState(m.state);if(m.type==='error')handleErr(m.message);};
+  ws.onclose=()=>{setConn(false);setTimeout(()=>connect(code),2500);};
+  ws.onerror=()=>setConn(false);
+}
+function send(m){if(ws&&ws.readyState===1)ws.send(JSON.stringify(m));}
+function setConn(on){el('conn-dot').className='conn-dot'+(on?' on':'');el('conn-label').textContent=on?'Connected':'Reconnecting...';}
+function handleErr(m){el('join-error').textContent=m;el('lobby-error').textContent=m;}
+
+function handleState(state){
+  G=state;
+  const active=document.querySelector('.screen.active,.full-screen.active,.reveal-screen.active')?.id;
+  const phase=state.phase;
+  if(phase==='lobby'){if(active!=='screen-lobby')showScreen('lobby');renderLobby(state);}
+  else if(phase==='submitting'){if(active!=='screen-submit')initSubmit(state);else if(hasSubmitted)updateWaitTicker(state);}
+  else if(phase==='revealing'){
+    if(active!=='screen-reveal'){revealedSteps=0;renderRevealScreen(state);}
+    else syncReveal(state);
+  }
+  else if(phase==='final'){if(active!=='screen-final')renderFinal(state);}
+}
+
+function createGame(){
+  const name=el('host-name').value.trim();if(!name){alert('Enter your name');return;}
+  const coinGoal=parseInt(el('coin-goal-select').value),code=genCode();
+  myName=name;isHost=true;
+  connect(code,()=>send({type:'create',playerId:myId,playerName:name,coinGoal}));
+}
+function joinGame(){
+  const name=el('join-name').value.trim(),code=el('join-code').value.trim().toUpperCase();
+  el('join-error').textContent='';
+  if(!name){el('join-error').textContent='Enter your name';return;}
+  if(code.length!==4){el('join-error').textContent='Enter a 4-letter code';return;}
+  myName=name;isHost=false;
+  connect(code,()=>send({type:'join',playerId:myId,playerName:name}));
+}
+function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ';return Array.from({length:4},()=>c[~~(Math.random()*c.length)]).join('');}
+
+function renderLobby(state){
+  el('lobby-code').textContent=state.code||el('conn-room').textContent;
+  el('lobby-goal').textContent=state.coinGoal.toLocaleString();
+  const ps=Object.entries(state.players);
+  el('lobby-players').innerHTML=ps.map(([id,p])=>`<li class="player-chip${id===state.hostId?' host':''}${id===myId?' you':''}">${p.name}${id===myId?' (you)':''}</li>`).join('');
+  el('lobby-ticker').textContent=`${ps.length} thief${ps.length===1?'':'ves'} assembled`;
+  el('start-btn').style.display=(isHost&&ps.length>=2)?'block':'none';
+  el('lobby-wait-msg').style.display=!isHost?'block':'none';
+}
+function copyCode(){navigator.clipboard?.writeText(el('lobby-code').textContent).catch(()=>{});}
+function startGame(){send({type:'start',playerId:myId});}
+
+function initSubmit(state){
+  hasSubmitted=false;dragonActive=false;heistActive=false;lockedHoards=[];lockedSnatches=[];
+  const me=state.players[myId]||{};
+  dragonUsed=me.dragonUsed||false;heistUsed=me.heistUsed||false;
+  el('sub-category-big').textContent=state.category;
+  el('sub-my-score').textContent=(me.score||0).toLocaleString();
+  el('dragon-btn').disabled=dragonUsed;el('dragon-btn').classList.remove('dragon-on');
+  el('heist-btn').disabled=heistUsed;el('heist-btn').classList.remove('heist-on');
+  renderSubmitInputs(state.category);
+  el('submit-btn').style.display='block';el('submit-error').textContent='';el('submitted-banner').style.display='none';
+  startClientTimer(state.timerStart,state.timerDuration);
+  showScreen('submit');
+}
+
+function renderSubmitInputs(cat){
+  const dc=dragonActive?3:1,hc=heistActive?3:1;
+  el('hoard-inputs').innerHTML=Array.from({length:dc},(_,i)=>autoInput(`h${i}`,'Hoard...')).join('');
+  el('snatch-inputs').innerHTML=Array.from({length:hc},(_,i)=>autoInput(`s${i}`,'Snatch...')).join('');
+  lockedHoards.forEach((v,i)=>{const inp=el(`inp-h${i}`);if(inp&&v){inp.value=v;lockField(inp,cat,i,'h');}});
+  lockedSnatches.forEach((v,i)=>{const inp=el(`inp-s${i}`);if(inp&&v){inp.value=v;lockField(inp,cat,i,'s');}});
+  document.querySelectorAll('#hoard-inputs input:not(.locked),#snatch-inputs input:not(.locked)').forEach(inp=>{
+    inp.addEventListener('input',()=>onFieldInput(inp,cat));
+  });
+  const first=document.querySelector('#hoard-inputs input:not(.locked),#snatch-inputs input:not(.locked)');
+  if(first)setTimeout(()=>first.focus(),50);
+}
+
+function autoInput(id,ph){
+  return `<div class="vi-wrap"><input type="text" id="inp-${id}" placeholder="${ph}" autocomplete="off" autocorrect="off" autocapitalize="words"/><span class="vi">✓</span></div>`;
+}
+
+function onFieldInput(inp,cat){
+  const wrap=inp.closest('.vi-wrap');
+  const valid=inp.value.trim()&&isValidAnswer(cat,inp.value);
+  if(wrap)wrap.classList.toggle('valid',!!valid);
+  if(valid){
+    const id=inp.id,type=id.includes('-h')?'h':'s',idx=parseInt(id.replace(`inp-${type}`,''));
+    lockField(inp,cat,idx,type);
+    setTimeout(()=>{
+      const all=[...document.querySelectorAll('#hoard-inputs input:not(.locked),#snatch-inputs input:not(.locked)')];
+      if(all.length)all[0].focus();
+      else maybeAutoSubmit(cat);
+    },80);
+  }
+}
+
+function lockField(inp,cat,idx,type){
+  const wrap=inp.closest('.vi-wrap');
+  const val=inp.value.trim();
+  // Replace the vi-wrap with a locked chip
+  const chip=document.createElement('div');
+  chip.className='locked-chip';
+  chip.innerHTML=`<span class="locked-chip-icon">✦</span><span class="locked-chip-text">${val}</span>`;
+  chip.dataset.idx=idx;chip.dataset.type=type;
+  if(wrap)wrap.replaceWith(chip);
+  else inp.replaceWith(chip);
+  // animate in
+  chip.classList.add('chip-pop');
+  if(type==='h')lockedHoards[idx]=val;
+  else lockedSnatches[idx]=val;
+}
+
+function maybeAutoSubmit(cat){
+  const dc=dragonActive?3:1,hc=heistActive?3:1;
+  const allH=Array.from({length:dc},(_,i)=>!!lockedHoards[i]).every(Boolean);
+  const allS=Array.from({length:hc},(_,i)=>!!lockedSnatches[i]).every(Boolean);
+  if(allH&&allS)submitMove();
+}
+
+function toggleDragon(){
+  if(dragonUsed)return;
+  if(heistActive){heistActive=false;el('heist-btn').classList.remove('heist-on');}
+  dragonActive=!dragonActive;el('dragon-btn').classList.toggle('dragon-on',dragonActive);
+  lockedHoards=[];renderSubmitInputs(G.category);
+}
+function toggleHeist(){
+  if(heistUsed)return;
+  if(dragonActive){dragonActive=false;el('dragon-btn').classList.remove('dragon-on');}
+  heistActive=!heistActive;el('heist-btn').classList.toggle('heist-on',heistActive);
+  lockedSnatches=[];renderSubmitInputs(G.category);
+}
+
+function startClientTimer(serverStart,dur){
+  if(timerInterval)clearInterval(timerInterval);
+  const circ=2*Math.PI*14,arc=el('timer-arc'),num=el('timer-num'),ring=el('timer-ring');
+  let lastSec=-1;
+  function tick(){
+    const rem=Math.max(0,dur-(Date.now()-serverStart)/1000),secs=Math.ceil(rem);
+    arc.style.strokeDashoffset=circ*(1-rem/dur);num.textContent=secs;
+    const urg=rem<=10;arc.classList.toggle('urgent',urg);num.classList.toggle('urgent',urg);
+    if(secs!==lastSec&&secs<=5&&secs>0){ring.classList.remove('pulse');void ring.offsetWidth;ring.classList.add('pulse');}
+    lastSec=secs;
+    if(rem<=0){clearInterval(timerInterval);if(!hasSubmitted)submitMove();}
+  }
+  tick();timerInterval=setInterval(tick,200);
+}
+
+function submitMove(){
+  if(!G||hasSubmitted)return;
+  const cat=G.category,items=CAT_SETS[cat]||new Set();
+  const dc=dragonActive?3:1,hc=heistActive?3:1;
+  let hoards=[],snatches=[];
+  for(let i=0;i<dc;i++){
+    const v=lockedHoards[i]||(el(`inp-h${i}`)?.value||'').trim();
+    if(!v){el('submit-error').textContent=`Fill in hoard ${i+1}`;return;}
+    if(!items.has(norm(v))){el('submit-error').textContent=`"${v}" not in category`;return;}
+    hoards.push(v);
+  }
+  for(let i=0;i<hc;i++){
+    const v=lockedSnatches[i]||(el(`inp-s${i}`)?.value||'').trim();
+    if(!v){el('submit-error').textContent=`Fill in snatch ${i+1}`;return;}
+    if(!items.has(norm(v))){el('submit-error').textContent=`"${v}" not in category`;return;}
+    snatches.push(v);
+  }
+  const hn=hoards.map(norm),sn=snatches.map(norm);
+  for(const h of hn)if(sn.includes(h)){el('submit-error').textContent=`Can't hoard and snatch the same treasure`;return;}
+  if(new Set([...hn,...sn]).size!==hn.length+sn.length){el('submit-error').textContent=`Duplicate treasure`;return;}
+  el('submit-error').textContent='';
+  if(timerInterval)clearInterval(timerInterval);
+  send({type:'submit',playerId:myId,hoards,snatches,dragon:dragonActive,heist:heistActive});
+  dragonUsed=dragonUsed||dragonActive;heistUsed=heistUsed||heistActive;
+  hasSubmitted=true;el('submit-btn').style.display='none';el('submitted-banner').style.display='block';
+  const bc=el('submitted-bags');bc.innerHTML='';
+  hoards.forEach((h,i)=>{
+    const w=document.createElement('div');w.style.cssText='display:flex;flex-direction:column;align-items:center;gap:3px;';
+    const b=document.createElement('div');b.className='dbag slam';b.innerHTML=bagSVG(BAG_COLORS[i%BAG_COLORS.length],44);
+    const lb=document.createElement('div');lb.style.cssText='font-size:10px;color:var(--muted);text-align:center;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';lb.textContent=h;
+    w.appendChild(b);w.appendChild(lb);bc.appendChild(w);
+    setTimeout(()=>{const{x,y}=elCenter(b);sprayCoins(x,y,14);},i*100);
+  });
+  updateWaitTicker(G);
+}
+function updateWaitTicker(state){
+  const subs=state.submissions[state.currentRound]||{},total=Object.keys(state.players).length,done=Object.keys(subs).length;
+  const waiting=Object.entries(state.players).filter(([id])=>!subs[id]).map(([,p])=>p.name);
+  el('wait-ticker').innerHTML=done<total?`Waiting on: ${waiting.join(', ')}`:`All in — revealing soon...`;
+}
+
+function renderRevealScreen(state){
+  const round=state.currentRound;
+  el('rev-category-pill').textContent=state.category;
+  el('rev-round-num').textContent=round;
+  el('rev-goal').textContent=state.coinGoal.toLocaleString();
+  el('rev-progress').style.width=Math.min(100,state.totalHoarded/state.coinGoal*100)+'%';
+  revealPlayerOrder=Object.keys(state.players);
+  buildRow1(state);buildRow2();buildRow3();
+  showScreen('reveal');
+  syncReveal(state);
+}
+
+function buildRow1(state){
+  el('row1').innerHTML=revealPlayerOrder.map(pid=>{
+    const p=state.players[pid];
+    return `<div class="row1-col" id="r1col-${pid}">
+      <div class="row1-name${pid===myId?' you':''}">${p.name}${pid===myId?' ★':''}</div>
+      <div class="row1-score" id="r1score-${pid}">${p.score.toLocaleString()}</div>
+      <div class="row1-delta" id="r1delta-${pid}"></div>
+      <div class="row1-bags" id="r1bags-${pid}"></div>
+    </div>`;
+  }).join('');
+}
+function buildRow2(){el('row2').innerHTML=revealPlayerOrder.map(pid=>`<div class="row2-col" id="r2col-${pid}"></div>`).join('');}
+function buildRow3(){el('row3').innerHTML=revealPlayerOrder.map(pid=>`<div class="row3-col" id="r3col-${pid}"></div>`).join('');}
+
+function syncReveal(state){
+  const round=state.currentRound;
+  const{revealGroups}=state.revealData[round]||{revealGroups:[]};
+  const step=state.revealStep||0;
+  const pts=state.roundPoints[round]||{};
+  for(let i=revealedSteps;i<step;i++){const group=revealGroups[i];if(group)revealGroup(group,state,i);}
+  revealedSteps=step;
+  const allRevealed=step>=revealGroups.length;
+  el('reveal-next-btn').style.display='none';
+  el('reveal-waiting-msg').style.display='none';
+  el('next-round-btn').style.display='none';
+  el('waiting-next-btn').style.display='none';
+  if(!allRevealed){
+    el('reveal-status').textContent=`${step} of ${revealGroups.length} revealed`;
+    if(isHost)el('reveal-next-btn').style.display='inline-flex';
+    else el('reveal-waiting-msg').style.display='flex';
+  }else{
+    el('reveal-status').textContent='All revealed';
+    if(isHost)el('next-round-btn').style.display='inline-flex';
+    else el('waiting-next-btn').style.display='inline-flex';
+  }
+}
+
+function revealGroup(group,state,groupIdx){
+  const{treasure,pids,snatchers}=group;
+  const tKey=treasure.replace(/\W/g,'-');
+  const round=state.currentRound;
+  const pts=state.roundPoints[round]||{};
+
+  // Drop bags into row3 under each hoarder
+  pids.forEach((pid,i)=>{
+    const col=el(`r3col-${pid}`);if(!col)return;
+    const colIdx=revealPlayerOrder.indexOf(pid);
+    const bagEl=document.createElement('div');
+    bagEl.className='dbag sz-lg slam';bagEl.id=`r3bag-${pid}-${tKey}`;
+    bagEl.innerHTML=bagSVG(BAG_COLORS[colIdx%BAG_COLORS.length],56);
+    col.appendChild(bagEl);
+    setTimeout(()=>{const{x,y}=elCenter(bagEl);sprayCoins(x,y,10);},i*120+80);
+  });
+
+  // Centered treasure label across the whole event row
+  const row3=el('row3');
+  row3.querySelectorAll('.event-label-global').forEach(l=>l.remove());
+  const lbl=document.createElement('div');
+  lbl.className='event-label-global';
+  lbl.textContent=treasure;
+  row3.appendChild(lbl);
+
+  const flyDelay=pids.length*120+600;
+  let landCount=0;
+  const totalFlights=pids.length;
+
+  pids.forEach((pid,i)=>{
+    const thieves=snatchers.filter(id=>id!==pid);
+    const bagEl=document.getElementById(`r3bag-${pid}-${tKey}`);if(!bagEl)return;
+
+    setTimeout(()=>{
+      if(thieves.length===0){
+        // Kept — fly up to hoarder's bag zone in row1
+        const colIdx=revealPlayerOrder.indexOf(pid);
+        const destCol=el(`r1bags-${pid}`);if(!destCol)return;
+        flyBag(bagEl,destCol,colIdx,()=>{
+          bagEl.classList.add('gone');
+          addBagToRow2(pid,colIdx,treasure,true);
+          const{x,y}=elCenter(destCol);sprayCoins(x,y,10);
+          // update that player's score on land
+          updateScoreForPlayer(pid,state,pts);
+          landCount++;
+          if(landCount===totalFlights)onAllLanded(state,pts,round);
+        });
+      }else{
+        bagEl.classList.add('gone');
+        let thiefLanded=0;
+        thieves.forEach((thiefId,ti)=>{
+          const thiefColIdx=revealPlayerOrder.indexOf(thiefId);
+          const destCol=el(`r1bags-${thiefId}`);if(!destCol)return;
+          const r=bagEl.getBoundingClientRect();
+          const fly=document.createElement('div');
+          const fsz=64;
+          fly.className='flying-bag';
+          fly.innerHTML=bagSVG(BAG_COLORS[thiefColIdx%BAG_COLORS.length],fsz);
+          fly.style.cssText=`left:${r.left+r.width/2-fsz/2}px;top:${r.top+r.height/2-fsz/2}px;width:${fsz}px;height:${fsz}px;`;
+          document.body.appendChild(fly);
+          const from={x:r.left+r.width/2-fsz/2,y:r.top+r.height/2-fsz/2};
+          const toR=destCol.getBoundingClientRect();
+          const to={x:toR.left+toR.width/2-fsz/2,y:toR.top+toR.height/2-fsz/2};
+          const cpx=from.x+(to.x-from.x)*.5,cpy=Math.min(from.y,to.y)-Math.abs(to.x-from.x)*.5-60;
+          const dur=700,st=performance.now();
+          function stepFly(now){
+            const t=Math.min(1,(now-st)/dur),e=1-(1-t)*(1-t)*(1-t);
+            const bx=(1-e)*(1-e)*from.x+2*(1-e)*e*cpx+e*e*to.x;
+            const by=(1-e)*(1-e)*from.y+2*(1-e)*e*cpy+e*e*to.y;
+            fly.style.left=bx+'px';fly.style.top=by+'px';
+            fly.style.transform=`rotate(${e*-35}deg) scale(${1+e*.1})`;
+            if(t<1){requestAnimationFrame(stepFly);}
+            else{
+              fly.style.transition='transform .22s cubic-bezier(.36,.07,.19,.97)';
+              fly.style.transform='scale(1.18,.82)';
+              setTimeout(()=>{fly.style.transform='scale(.93,1.07)';setTimeout(()=>{
+                fly.remove();
+                addBagToRow2(thiefId,thiefColIdx,treasure,false);
+                const{x,y}=elCenter(destCol);sprayCoins(x,y,14);
+                // update thief score on land
+                updateScoreForPlayer(thiefId,state,pts);
+                thiefLanded++;
+                if(thiefLanded===thieves.length){
+                  landCount++;
+                  if(landCount===totalFlights)onAllLanded(state,pts,round);
+                }
+              },100);},120);
+            }
+          }
+          setTimeout(()=>requestAnimationFrame(stepFly),ti*80);
+        });
+      }
+    },flyDelay+i*200);
+  });
+}
+
+function updateScoreForPlayer(pid,state,pts){
+  const scoreEl=el(`r1score-${pid}`);
+  const deltaEl=el(`r1delta-${pid}`);
+  const p=state.players[pid];
+  if(scoreEl)scoreEl.textContent=p.score.toLocaleString();
+  const delta=pts[pid]||0;
+  if(deltaEl&&delta>0){
+    deltaEl.textContent=`+${delta.toLocaleString()}`;
+    deltaEl.classList.remove('show');void deltaEl.offsetWidth;
+    deltaEl.classList.add('show');
+    setTimeout(()=>deltaEl.classList.remove('show'),2200);
+  }
+}
+
+function onAllLanded(state,pts,round){
+  // nothing extra needed — scores already updated per landing
+}
+
+function addBagToRow2(pid,colIdx,label,kept){
+  const col=el(`r1bags-${pid}`);if(!col)return;
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:inline-flex;flex-direction:column;align-items:center;gap:2px;';
+  const bagEl=document.createElement('div');
+  bagEl.className=`dbag ${kept?'kept-anim':'slam'}`;
+  bagEl.style.cssText='width:36px;height:36px;';
+  bagEl.innerHTML=bagSVG(BAG_COLORS[colIdx%BAG_COLORS.length],36);
+  const lbl=document.createElement('div');
+  lbl.style.cssText='font-size:8px;color:var(--muted);text-align:center;max-width:40px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+  lbl.textContent=label;
+  wrap.appendChild(bagEl);wrap.appendChild(lbl);col.appendChild(wrap);
+  if(kept){bagEl.style.filter='drop-shadow(0 0 8px rgba(168,224,99,0.9))';setTimeout(()=>bagEl.style.filter='',700);}
+  else{bagEl.style.filter='drop-shadow(0 0 8px rgba(255,107,91,0.9))';setTimeout(()=>bagEl.style.filter='',700);}
+}
+
+function sendRevealNext(){
+  if(testMode){const groups=G.revealData[G.currentRound]?.revealGroups||[];if(G.revealStep<groups.length){G.revealStep++;syncReveal(G);}}
+  else{send({type:'reveal_next',playerId:myId});}
+}
+function nextRound(){
+  revealedSteps=0;
+  if(testMode){
+    if(G.totalHoarded>=G.coinGoal){G.phase='final';renderFinal(G);}
+    else{
+      G.currentRound++;G.phase='submitting';G.submissions[G.currentRound]={};G.revealStep=0;
+      const nextCat=pickCategory(G.usedCategories);G.category=nextCat;G.usedCategories.push(nextCat);
+      testPlayers.forEach((_,i)=>{setTS(i,'dragonActive',false);setTS(i,'heistActive',false);});
+      showScreen('test');renderTestPanels();updateTestHeader();
+    }
+  }else{send({type:'next_round',playerId:myId});}
+}
+
+function renderFinal(state){
+  const sorted=Object.entries(state.players).sort((a,b)=>b[1].score-a[1].score);
+  el('final-winner').textContent=`♛ ${sorted[0][1].name} claims the vault`;
+  el('final-score-table').innerHTML=`<tr><th>Rank</th><th>Thief</th><th>Coins</th></tr>`+
+    sorted.map(([pid,p],i)=>`<tr><td>${['♛','♜','♝','♞'][i]||i+1}</td><td>${p.name}${pid===myId?' (you)':''}</td><td class="score-num">${p.score.toLocaleString()}</td></tr>`).join('');
+  const bc=el('final-bags');bc.innerHTML='';
+  [0,1,2].forEach(i=>{const b=document.createElement('div');b.className='dbag sz-lg kept-anim';b.innerHTML=bagSVG(BAG_COLORS[i],52);bc.appendChild(b);setTimeout(()=>{const{x,y}=elCenter(b);sprayCoins(x,y,18);},i*180);});
+  showScreen('final');
+}
+
+function resetToHome(){
+  if(ws){ws.close();ws=null;}if(timerInterval)clearInterval(timerInterval);
+  G=null;myId=uid();isHost=false;hasSubmitted=false;testMode=false;testPlayers=[];
+  dragonActive=false;heistActive=false;dragonUsed=false;heistUsed=false;
+  revealedSteps=0;lockedHoards=[];lockedSnatches=[];
+  el('conn-bar').style.display='none';showScreen('home');
+}
+
+const TEST_NAMES=['Alice','Bob','Carol'];
+function enterTestMode(){
+  testMode=true;isHost=true;
+  const coinGoal=parseInt(el('coin-goal-select').value);
+  testPlayers=TEST_NAMES.map((name,i)=>({id:'test_'+i,name,dragonUsed:false,heistUsed:false}));
+  const players={};testPlayers.forEach(p=>{players[p.id]={name:p.name,score:0,dragonUsed:false,heistUsed:false};});
+  const cat=pickCategory([]);
+  G={code:'TEST',hostId:'test_0',category:cat,coinGoal,currentRound:1,totalHoarded:0,phase:'submitting',
+    players,submissions:{1:{}},roundPoints:{},revealData:{},revealStep:0,timerStart:Date.now(),timerDuration:30,
+    usedCategories:[cat]};
+  showScreen('test');updateTestHeader();renderTestPanels();
+}
+function updateTestHeader(){
+  el('t-round').textContent=G.currentRound;el('t-hoarded').textContent=G.totalHoarded.toLocaleString();
+  el('t-goal').textContent=G.coinGoal.toLocaleString();el('t-phase').textContent=G.phase;
+  el('t-category').textContent=G.category||'—';
+  const btn=el('t-action-btn');
+  if(G.phase==='submitting'){btn.textContent='Reveal Round';btn.disabled=!testAllSubmitted();btn.style.display='inline-flex';}
+  else{btn.style.display='none';}
+}
+function testAllSubmitted(){const subs=G.submissions[G.currentRound]||{};return testPlayers.every(p=>subs[p.id]);}
+function getTS(i,k){return(testPanelState[i]||{})[k];}
+function setTS(i,k,v){if(!testPanelState[i])testPanelState[i]={};testPanelState[i][k]=v;}
+function testToggleDragon(i){const c=getTS(i,'dragonActive');setTS(i,'heistActive',false);setTS(i,'dragonActive',!c);renderTestPanels();}
+function testToggleHeist(i){const c=getTS(i,'heistActive');setTS(i,'dragonActive',false);setTS(i,'heistActive',!c);renderTestPanels();}
+
+function testSubmit(idx){
+  const player=testPlayers[idx],cat=G.category,items=CAT_SETS[cat]||new Set();
+  const dragonOn=!!getTS(idx,'dragonActive'),heistOn=!!getTS(idx,'heistActive');
+  const dc=dragonOn?3:1,hc=heistOn?3:1;
+  const errEl=el(`te${idx}-err`);let hoards=[],snatches=[];
+  for(let i=0;i<dc;i++){const v=(el(`te${idx}-h${i}`)?.value||'').trim();if(!v){errEl.textContent=`Fill in hoard ${i+1}`;return;}if(!items.has(norm(v))){errEl.textContent=`"${v}" not in category`;return;}hoards.push(v);}
+  for(let i=0;i<hc;i++){const v=(el(`te${idx}-s${i}`)?.value||'').trim();if(!v){errEl.textContent=`Fill in snatch ${i+1}`;return;}if(!items.has(norm(v))){errEl.textContent=`"${v}" not in category`;return;}snatches.push(v);}
+  const hn=hoards.map(norm),sn=snatches.map(norm);
+  for(const h of hn)if(sn.includes(h)){errEl.textContent=`Can't hoard and snatch the same`;return;}
+  if(new Set([...hn,...sn]).size!==hn.length+sn.length){errEl.textContent=`Duplicate`;return;}
+  if(!G.submissions[G.currentRound])G.submissions[G.currentRound]={};
+  G.submissions[G.currentRound][player.id]={hoards,snatches,dragon:dragonOn,heist:heistOn};
+  if(dragonOn){player.dragonUsed=true;G.players[player.id].dragonUsed=true;}
+  if(heistOn){player.heistUsed=true;G.players[player.id].heistUsed=true;}
+  setTS(idx,'dragonActive',false);setTS(idx,'heistActive',false);
+  updateTestHeader();renderTestPanels();
+  // auto-advance to reveal if all submitted
+  if(testAllSubmitted())setTimeout(()=>testAction(),400);
+}
+
+function testAction(){
+  if(G.phase==='submitting'&&testAllSubmitted()){
+    G=testComputeScores(G);G.phase='revealing';G.revealStep=0;
+    isHost=true;revealedSteps=0;renderRevealScreen(G);
+  }
+}
+
+function testComputeScores(state){
+  const round=state.currentRound,subs=state.submissions[round]||{},players=Object.keys(subs);
+  const allHoards={},allSnatches={};
+  players.forEach(pid=>{
+    (subs[pid].hoards||[]).forEach(h=>{const k=norm(h);if(!allHoards[k])allHoards[k]=[];allHoards[k].push(pid);});
+    (subs[pid].snatches||[]).forEach(s=>{const k=norm(s);if(!allSnatches[k])allSnatches[k]=[];allSnatches[k].push(pid);});
+  });
+  const pts={};players.forEach(pid=>{pts[pid]=0;});let roundCoins=0;
+  players.forEach(pid=>{
+    (subs[pid].hoards||[]).forEach(h=>{const k=norm(h),th=(allSnatches[k]||[]).filter(id=>id!==pid);if(th.length===0){pts[pid]+=COIN;roundCoins+=COIN;}});
+  });
+  players.forEach(pid=>{
+    (subs[pid].snatches||[]).forEach(s=>{const k=norm(s),ho=(allHoards[k]||[]).filter(id=>id!==pid);if(ho.length>0)pts[pid]+=COIN*ho.length;});
+  });
+  players.forEach(pid=>{if(state.players[pid])state.players[pid].score+=pts[pid];});
+  state.totalHoarded+=roundCoins;state.roundPoints[round]=pts;
+  const gm={};
+  Object.entries(allHoards).forEach(([t,pids])=>{const sz=pids.length;if(!gm[sz])gm[sz]=[];gm[sz].push({treasure:t,pids,snatchers:allSnatches[t]||[]});});
+  state.revealData[round]={allHoards,allSnatches,revealGroups:Object.keys(gm).map(Number).sort((a,b)=>a-b).flatMap(sz=>gm[sz])};
+  return state;
+}
+
+function renderTestPanels(){
+  el('test-panels').innerHTML=testPlayers.map((p,idx)=>{
+    const subs=G.submissions[G.currentRound]||{},submitted=!!subs[p.id];
+    const dragonOn=!!getTS(idx,'dragonActive'),heistOn=!!getTS(idx,'heistActive'),cat=G.category;
+    let content='';
+    if(submitted){
+      const sub=subs[p.id];
+      const bags=sub.hoards.map((h,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div class="dbag slam sz-md">${bagSVG(BAG_COLORS[i%BAG_COLORS.length],40)}</div><div style="font-size:9px;color:var(--muted);text-align:center;max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${h}</div></div>`).join('');
+      content=`<div class="submitted-banner" style="font-size:12px;">✦ Submitted<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">${bags}</div><div style="font-size:10px;color:var(--muted);margin-top:5px;">Snatch: ${sub.snatches.join(', ')||'—'}</div></div>`;
+    }else{
+      const dc=dragonOn?3:1,hc=heistOn?3:1;
+      content=`<div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);margin-bottom:4px;">${(G.players[p.id]?.score||0).toLocaleString()} coins</div>
+      <div style="font-size:13px;color:var(--text);background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;margin-bottom:10px;text-align:center;">${cat}</div>
+      <div class="power-row" style="gap:7px;margin:.5rem 0 .2rem;">
+        <button class="power-btn ${dragonOn?'dragon-on':''}" ${p.dragonUsed?'disabled':''} onclick="testToggleDragon(${idx})" style="padding:8px 6px;">
+          <div class="power-label">One-time</div><div class="power-name">Dragon's Hoard</div><div class="power-desc">Hoard 3</div>
+        </button>
+        <button class="power-btn ${heistOn?'heist-on':''}" ${p.heistUsed?'disabled':''} onclick="testToggleHeist(${idx})" style="padding:8px 6px;">
+          <div class="power-label">One-time</div><div class="power-name">Heist</div><div class="power-desc">Snatch 3</div>
+        </button>
+      </div>
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:.6rem 0 .3rem;">Hoard</div>
+      ${Array.from({length:dc},(_,i)=>`<div class="vi-wrap"><input type="text" id="te${idx}-h${i}" placeholder="Hoard..." autocomplete="off" oninput="tvali(this,'${cat}')"/><span class="vi">✓</span></div>`).join('')}
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:.6rem 0 .3rem;">Snatch</div>
+      ${Array.from({length:hc},(_,i)=>`<div class="vi-wrap"><input type="text" id="te${idx}-s${i}" placeholder="Snatch..." autocomplete="off" oninput="tvali(this,'${cat}')"/><span class="vi">✓</span></div>`).join('')}
+      <div class="error-msg" id="te${idx}-err"></div>
+      <button class="btn" style="margin-top:.6rem;" onclick="testSubmit(${idx})">Submit</button>`;
+    }
+    return `<div class="test-panel"><div class="test-panel-label">${p.name}${idx===0?'<span class="host-badge">HOST</span>':''}</div>${content}</div>`;
+  }).join('');
+}
+
+function tvali(inp,cat){const w=inp.closest('.vi-wrap');if(w)w.classList.toggle('valid',!!(inp.value.trim()&&isValidAnswer(cat,inp.value)));}
+
+function initHomeBags(){
+  const ctr=el('home-bags');if(!ctr)return;
+  [0,1,2].forEach(i=>{const w=document.createElement('div');w.className='dbag sz-lg';w.style.animationDelay=`${i*.4}s`;w.innerHTML=bagSVG(BAG_COLORS[i],52);ctr.appendChild(w);});
+}
+
+initHomeBags();
+</script>
+</body>
+</html>
