@@ -1,21 +1,4 @@
-const CATEGORIES = {
-  "Fruits":["Apple","Banana","Mango","Strawberry","Grape","Pineapple","Watermelon","Peach","Cherry","Kiwi","Lemon","Lime","Coconut","Blueberry","Raspberry","Papaya","Plum","Pomegranate","Fig","Apricot","Lychee","Guava","Passion Fruit","Dragon Fruit","Cantaloupe"],
-  "Seasons of Survivor":["Borneo","Australian Outback","Africa","Marquesas","Thailand","The Amazon","Pearl Islands","Vanuatu","Palau","Guatemala","Panama","Cook Islands","Fiji","China","Micronesia","Gabon","Tocantins","Samoa","Nicaragua","Redemption Island","South Pacific","Philippines","Caramoan","Blood vs Water","Cagayan","San Juan del Sur","Worlds Apart","Cambodia","Kaoh Rong","Millennials vs Gen X","Game Changers","HHH","Ghost Island","David vs Goliath","Edge of Extinction","Island of the Idols","Winners at War"],
-  "Countries in North America":["United States","Canada","Mexico","Guatemala","Belize","Honduras","El Salvador","Nicaragua","Costa Rica","Panama","Cuba","Jamaica","Haiti","Dominican Republic","Bahamas","Barbados","Trinidad and Tobago","Grenada","Saint Lucia","Antigua and Barbuda","Dominica","Saint Vincent","Saint Kitts and Nevis"],
-  "Disney Animated Characters 90s":["Ariel","Simba","Aladdin","Jasmine","Belle","Beast","Pocahontas","Mulan","Tarzan","Hercules","Hades","Jafar","Scar","Timon","Pumbaa","Genie","Nala","Mufasa","Ursula","Gaston","Lumiere","Cogsworth","Mrs Potts","Flounder","Sebastian","Iago","Zazu","Rafiki","Mushu","Phil"],
-  "US States":["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"],
-  "Olympic Sports":["Swimming","Athletics","Gymnastics","Cycling","Rowing","Sailing","Boxing","Wrestling","Judo","Fencing","Shooting","Archery","Equestrian","Triathlon","Weightlifting","Volleyball","Basketball","Soccer","Tennis","Badminton","Table Tennis","Handball","Hockey","Rugby Sevens","Skateboarding","Surfing","Sport Climbing","Baseball"],
-  "Famous Scientists":["Einstein","Newton","Darwin","Curie","Tesla","Hawking","Galileo","Feynman","Turing","Edison","Faraday","Maxwell","Bohr","Pasteur","Mendel","Lavoisier","Kepler","Copernicus","Archimedes","Oppenheimer","Planck","Heisenberg","Schrodinger","Lovelace","Noether"],
-  "Dog Breeds":["Labrador","Golden Retriever","German Shepherd","Bulldog","Poodle","Beagle","Rottweiler","Yorkshire Terrier","Boxer","Dachshund","Siberian Husky","Great Dane","Doberman","Shih Tzu","Chihuahua","Border Collie","Pomeranian","Maltese","Cocker Spaniel","Dalmatian","Greyhound","Pug","Samoyed","Akita","Weimaraner"],
-  "World Capitals":["Paris","Tokyo","London","Berlin","Rome","Madrid","Beijing","Moscow","Ottawa","Canberra","Brasilia","Cairo","New Delhi","Buenos Aires","Seoul","Mexico City","Jakarta","Ankara","Nairobi","Bangkok","Lisbon","Vienna","Warsaw","Stockholm","Oslo","Copenhagen","Helsinki","Athens","Prague","Budapest"],
-  "Movies from the 2000s":["The Dark Knight","Inception","Avatar","The Lord of the Rings","Finding Nemo","Gladiator","Shrek","Pirates of the Caribbean","Harry Potter","Spider-Man","Ratatouille","Wall-E","Up","No Country for Old Men","There Will Be Blood","Eternal Sunshine","Brokeback Mountain","Crash","Million Dollar Baby","Chicago","A Beautiful Mind","Memento","Cast Away"],
-  "Card Games":["Poker","Blackjack","Rummy","Bridge","Solitaire","Go Fish","War","Uno","Crazy Eights","Snap","Hearts","Spades","Cribbage","Canasta","Pinochle","Baccarat","Old Maid","Concentration","Speed","Slapjack"],
-  "Taylor Swift Albums":["Taylor Swift","Fearless","Speak Now","Red","1989","Reputation","Lover","Folklore","Evermore","Midnights"],
-  "NBA Teams":["Lakers","Celtics","Bulls","Warriors","Heat","Knicks","Spurs","Nets","Bucks","Suns","Mavericks","Clippers","76ers","Raptors","Nuggets","Cavaliers","Pistons","Trail Blazers","Thunder","Jazz"],
-  "Things in a Kitchen":["Refrigerator","Oven","Microwave","Sink","Dishwasher","Toaster","Blender","Cutting board","Knife","Pan","Pot","Colander","Spatula","Whisk","Measuring cup","Rolling pin","Grater","Peeler","Ladle","Tongs"]
-};
-
-const CAT_NAMES = Object.keys(CATEGORIES);
+import { CATEGORIES, CAT_NAMES } from './public/categories.js';
 
 export default class SnatchRoom {
   constructor(room) {
@@ -24,10 +7,21 @@ export default class SnatchRoom {
     this.timerInterval = null;
   }
 
-  pickCategory(usedCategories = []) {
-    const available = CAT_NAMES.filter(c => !usedCategories.includes(c));
-    const pool = available.length > 0 ? available : CAT_NAMES;
-    return pool[Math.floor(Math.random() * pool.length)];
+  setCategory(cat) {
+    this.state.category = cat;
+    this.state.categoryItems = (CATEGORIES[cat] || []).map(i => i.split('|')[0]);
+  }
+
+  pickCategory() {
+    const s = this.state;
+    // Play drafted-but-unplayed categories first
+    const unplayed = (s.draftedCategories||[]).filter(c => !s.usedCategories.includes(c));
+    if (unplayed.length > 0) return unplayed[~~(Math.random() * unplayed.length)];
+    // Then random, excluding all categories that were offered during the draft
+    const excl = new Set([...s.usedCategories, ...(s.excludedCategories||[])]);
+    const avail = CAT_NAMES.filter(c => !excl.has(c));
+    const pool = avail.length > 0 ? avail : CAT_NAMES.filter(c => !s.usedCategories.includes(c));
+    return pool[~~(Math.random() * pool.length)];
   }
 
   onConnect(conn) {
@@ -40,9 +34,11 @@ export default class SnatchRoom {
       case "create":      this.handleCreate(msg, conn); break;
       case "join":        this.handleJoin(msg, conn); break;
       case "start":       this.handleStart(msg, conn); break;
+      case "draft_pick":  this.handleDraftPick(msg, conn); break;
       case "submit":      this.handleSubmit(msg, conn); break;
       case "reveal_next": this.handleRevealNext(msg, conn); break;
       case "next_round":  this.handleNextRound(msg, conn); break;
+      case "rematch":     this.handleRematch(msg, conn); break;
     }
   }
 
@@ -64,7 +60,11 @@ export default class SnatchRoom {
       revealData: {},
       revealStep: 0,
       timerStart: null,
-      timerDuration: 30
+      timerDuration: 45,
+      draftOptions: {},
+      draftPicks: {},
+      draftedCategories: [],
+      excludedCategories: [],
     };
     this.broadcast({ type: "state", state: this.state });
   }
@@ -78,16 +78,125 @@ export default class SnatchRoom {
 
   handleStart(msg, conn) {
     if (!this.state || msg.playerId !== this.state.hostId) return;
-    if (Object.keys(this.state.players).length < 2) {
+    const playerIds = Object.keys(this.state.players);
+    if (playerIds.length < 2) {
       conn.send(JSON.stringify({ type: "error", message: "Need at least 2 players" })); return;
     }
-    this.state.category = this.pickCategory(this.state.usedCategories);
-    this.state.usedCategories.push(this.state.category);
-    this.state.phase = "submitting";
-    this.state.submissions[this.state.currentRound] = {};
-    this.state.timerStart = Date.now();
+    // Assign 3 unique categories to each player (wraps around if >5 players)
+    const shuffled = [...CAT_NAMES].sort(() => Math.random() - 0.5);
+    const draftOptions = {};
+    playerIds.forEach((pid, i) => {
+      const opts = [];
+      for (let j = 0; j < 3; j++) opts.push(shuffled[(i * 3 + j) % CAT_NAMES.length]);
+      draftOptions[pid] = opts;
+    });
+    this.state.draftOptions = draftOptions;
+    this.state.draftPicks = {};
+    this.state.draftedCategories = [];
+    this.state.excludedCategories = [...new Set(Object.values(draftOptions).flat())];
+    this.state.phase = "drafting";
     this.broadcast({ type: "state", state: this.state });
-    this.startTimer();
+  }
+
+  handleDraftPick(msg, conn) {
+    if (!this.state || this.state.phase !== "drafting") return;
+    if (this.state.draftPicks[msg.playerId]) return;
+    const opts = this.state.draftOptions[msg.playerId] || [];
+    if (!opts.includes(msg.category)) return;
+    this.state.draftPicks[msg.playerId] = msg.category;
+    this.state.draftedCategories.push(msg.category);
+    const allPicked = Object.keys(this.state.players).every(pid => this.state.draftPicks[pid]);
+    if (allPicked) {
+      this.setCategory(this.pickCategory());
+      this.state.usedCategories.push(this.state.category);
+      this.state.phase = "submitting";
+      this.state.submissions[this.state.currentRound] = {};
+      this.state.timerStart = Date.now();
+      this.broadcast({ type: "state", state: this.state });
+      this.startTimer();
+    } else {
+      this.broadcast({ type: "state", state: this.state });
+    }
+  }
+
+  handleSubmit(msg, conn) {
+    if (!this.state || this.state.phase !== "submitting") return;
+    const round = this.state.currentRound;
+    if (!this.state.submissions[round]) this.state.submissions[round] = {};
+    if (this.state.submissions[round][msg.playerId]) return;
+    this.state.submissions[round][msg.playerId] = {
+      hoards: msg.hoards || [], snatches: msg.snatches || [],
+      dragon: msg.dragon || false, heist: msg.heist || false
+    };
+    if (msg.dragon) this.state.players[msg.playerId].dragonUsed = true;
+    if (msg.heist)  this.state.players[msg.playerId].heistUsed = true;
+    const playerIds = Object.keys(this.state.players);
+    if (playerIds.every(id => this.state.submissions[round][id])) {
+      if (this.timerInterval) clearInterval(this.timerInterval);
+      this.broadcast({ type: "state", state: this.state });
+      setTimeout(() => {
+        if (!this.state || this.state.phase !== "submitting") return;
+        this.state = this.computeScores(this.state);
+        this.state.phase = "revealing";
+        this.state.revealStep = 0;
+        this.broadcast({ type: "state", state: this.state });
+      }, 2000);
+    } else {
+      this.broadcast({ type: "state", state: this.state });
+    }
+  }
+
+  handleRevealNext(msg, conn) {
+    if (!this.state || msg.playerId !== this.state.hostId || this.state.phase !== "revealing") return;
+    const groups = this.state.revealData[this.state.currentRound]?.revealGroups || [];
+    if (this.state.revealStep <= groups.length) this.state.revealStep++;
+    this.broadcast({ type: "state", state: this.state });
+  }
+
+  handleNextRound(msg, conn) {
+    if (!this.state || msg.playerId !== this.state.hostId || this.state.phase !== "revealing") return;
+    const maxScore = Math.max(...Object.values(this.state.players).map(p => p.score));
+    if (maxScore >= this.state.coinGoal) {
+      this.state.phase = "final";
+    } else {
+      this.state.currentRound++;
+      this.setCategory(this.pickCategory());
+      this.state.usedCategories.push(this.state.category);
+      this.state.phase = "submitting";
+      this.state.submissions[this.state.currentRound] = {};
+      this.state.timerStart = Date.now();
+      this.startTimer();
+    }
+    this.broadcast({ type: "state", state: this.state });
+  }
+
+  handleRematch(msg, conn) {
+    if (!this.state || msg.playerId !== this.state.hostId || this.state.phase !== "final") return;
+    const players = {};
+    Object.entries(this.state.players).forEach(([id, p]) => {
+      players[id] = { name: p.name, score: 0, dragonUsed: false, heistUsed: false };
+    });
+    this.state = {
+      hostId: this.state.hostId,
+      coinGoal: this.state.coinGoal,
+      currentRound: 1,
+      category: null,
+      usedCategories: [],
+      totalHoarded: 0,
+      phase: "lobby",
+      players,
+      submissions: {},
+      roundPoints: {},
+      revealData: {},
+      revealStep: 0,
+      timerStart: null,
+      timerDuration: this.state.timerDuration,
+      draftOptions: {},
+      draftPicks: {},
+      draftedCategories: [],
+      excludedCategories: [],
+    };
+    this.broadcast({ type: "state", state: this.state });
   }
 
   startTimer() {
@@ -115,57 +224,11 @@ export default class SnatchRoom {
     this.broadcast({ type: "state", state: this.state });
   }
 
-  handleSubmit(msg, conn) {
-    if (!this.state || this.state.phase !== "submitting") return;
-    const round = this.state.currentRound;
-    if (!this.state.submissions[round]) this.state.submissions[round] = {};
-    if (this.state.submissions[round][msg.playerId]) return;
-    this.state.submissions[round][msg.playerId] = {
-      hoards: msg.hoards || [], snatches: msg.snatches || [],
-      dragon: msg.dragon || false, heist: msg.heist || false
-    };
-    if (msg.dragon) this.state.players[msg.playerId].dragonUsed = true;
-    if (msg.heist)  this.state.players[msg.playerId].heistUsed = true;
-
-    const playerIds = Object.keys(this.state.players);
-    if (playerIds.every(id => this.state.submissions[round][id])) {
-      if (this.timerInterval) clearInterval(this.timerInterval);
-      this.state = this.computeScores(this.state);
-      this.state.phase = "revealing";
-      this.state.revealStep = 0;
-    }
-    this.broadcast({ type: "state", state: this.state });
-  }
-
-  handleRevealNext(msg, conn) {
-    if (!this.state || msg.playerId !== this.state.hostId || this.state.phase !== "revealing") return;
-    const groups = this.state.revealData[this.state.currentRound]?.revealGroups || [];
-    if (this.state.revealStep < groups.length) this.state.revealStep++;
-    this.broadcast({ type: "state", state: this.state });
-  }
-
-  handleNextRound(msg, conn) {
-    if (!this.state || msg.playerId !== this.state.hostId || this.state.phase !== "revealing") return;
-    if (this.state.totalHoarded >= this.state.coinGoal) {
-      this.state.phase = "final";
-    } else {
-      this.state.currentRound++;
-      this.state.category = this.pickCategory(this.state.usedCategories);
-      this.state.usedCategories.push(this.state.category);
-      this.state.phase = "submitting";
-      this.state.submissions[this.state.currentRound] = {};
-      this.state.timerStart = Date.now();
-      this.startTimer();
-    }
-    this.broadcast({ type: "state", state: this.state });
-  }
-
   computeScores(state) {
     const round = state.currentRound;
     const subs = state.submissions[round] || {};
     const players = Object.keys(subs);
     const COIN = 100;
-
     const allHoards = {}, allSnatches = {};
     players.forEach(pid => {
       (subs[pid].hoards || []).forEach(h => {
@@ -179,11 +242,9 @@ export default class SnatchRoom {
         allSnatches[k].push(pid);
       });
     });
-
     const pts = {};
     players.forEach(pid => { pts[pid] = 0; });
     let roundHoardedCoins = 0;
-
     players.forEach(pid => {
       (subs[pid].hoards || []).forEach(h => {
         const k = h.trim().toLowerCase();
@@ -191,7 +252,6 @@ export default class SnatchRoom {
         if (thieves.length === 0) { pts[pid] += COIN; roundHoardedCoins += COIN; }
       });
     });
-
     players.forEach(pid => {
       (subs[pid].snatches || []).forEach(s => {
         const k = s.trim().toLowerCase();
@@ -199,14 +259,11 @@ export default class SnatchRoom {
         if (hoarders.length > 0) pts[pid] += COIN * hoarders.length;
       });
     });
-
     players.forEach(pid => {
       if (state.players[pid]) state.players[pid].score += pts[pid];
     });
-
     state.totalHoarded += roundHoardedCoins;
     state.roundPoints[round] = pts;
-
     const groupMap = {};
     Object.entries(allHoards).forEach(([treasure, pids]) => {
       const size = pids.length;
@@ -215,7 +272,6 @@ export default class SnatchRoom {
     });
     const revealGroups = Object.keys(groupMap).map(Number).sort((a, b) => a - b)
       .flatMap(size => groupMap[size]);
-
     state.revealData[round] = { allHoards, allSnatches, revealGroups };
     return state;
   }

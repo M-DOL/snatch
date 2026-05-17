@@ -15,19 +15,19 @@
   --red2:#ff6b5b;--red-dim:rgba(255,107,91,0.12);
   --text:#f0e8d8;--muted:#8a7a60;--success:#a8e063;--success-dim:rgba(168,224,99,0.1);
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;
   background-image:radial-gradient(ellipse at 15% 0%,rgba(240,192,64,0.07) 0%,transparent 55%),radial-gradient(ellipse at 85% 100%,rgba(192,57,43,0.07) 0%,transparent 55%);}
 
-.screen{display:none;} .screen.active{display:block;animation:fadeIn .25s ease forwards;} #screen-submit.active{display:flex;}
-.full-screen{display:none;flex-direction:column;height:100vh;overflow:hidden;} .full-screen.active{display:flex;}
+.screen{display:none;} .screen.active{display:flex;flex-direction:column;flex:1;min-height:0;animation:fadeIn .25s ease forwards;} #screen-submit.active{display:flex;}
+.full-screen{display:none;flex-direction:column;overflow:hidden;} .full-screen.active{display:flex;flex:1;min-height:0;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
-.center-wrap{max-width:520px;margin:0 auto;padding:2rem 1rem 3rem;width:100%;overflow-y:auto;height:100vh;}
+.center-wrap{max-width:520px;margin:0 auto;padding:2rem 1rem 3rem;width:100%;overflow-y:auto;flex:1;min-height:0;}
 
-.logo{font-family:'Cinzel Decorative',serif;font-size:46px;color:var(--gold);line-height:1;text-shadow:0 0 60px rgba(240,192,64,0.3);margin-bottom:4px;}
+.logo{font-family:'Cinzel Decorative',serif;font-size:46px;color:var(--gold);line-height:1;text-shadow:0 0 60px rgba(240,192,64,0.3);margin-bottom:4px;text-align:center;letter-spacing:4px;}
 .logo.sm{font-size:26px;margin-bottom:2px;}
-.tagline{font-size:11px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:2rem;}
+.tagline{font-size:11px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:2rem;text-align:center;}
 .tagline.sm{margin-bottom:1.25rem;}
-.card-title{font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);margin-bottom:1rem;}
+.card-title{font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:1.5px;color:var(--gold);margin-bottom:1rem;}
 
 .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:.75rem;position:relative;overflow:hidden;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(240,192,64,0.28),transparent);}
@@ -45,7 +45,7 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
 .vi-wrap .vi{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:14px;opacity:0;transition:opacity .12s;pointer-events:none;}
 .vi-wrap.valid .vi{opacity:1;color:var(--success);}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:#0d0a06;border:none;border-radius:9px;font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:.5px;padding:11px 22px;cursor:pointer;transition:transform .12s,box-shadow .12s;width:100%;margin-top:.85rem;box-shadow:0 0 24px rgba(240,192,64,.18);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:#0d0a06;border:none;border-radius:9px;font-family:'Cinzel Decorative',serif;font-size:13px;letter-spacing:2px;padding:11px 22px;cursor:pointer;transition:transform .12s,box-shadow .12s;width:100%;margin-top:.85rem;box-shadow:0 0 24px rgba(240,192,64,.18);}
 .btn:hover{transform:scale(1.015);box-shadow:0 0 36px rgba(240,192,64,.32);} .btn:active{transform:scale(.96);}
 .btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none;}
 .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border);box-shadow:none;font-family:'DM Sans',sans-serif;font-size:13px;}
@@ -67,12 +67,13 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
 .or-divider{text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;margin:.75rem 0;text-transform:uppercase;}
 .error-msg{color:var(--red2);font-size:12px;margin-top:6px;min-height:16px;}
 .muted-text{color:var(--muted);font-size:12px;}
-.submitted-banner{background:var(--success-dim);border:1px solid rgba(168,224,99,.22);border-radius:10px;padding:.8rem 1.25rem;color:var(--success);font-size:13px;margin-top:.75rem;}
+.submitted-banner{text-align:center;padding:1.25rem .5rem;color:var(--success);margin-top:.75rem;}
+.submitted-banner .lock-word{font-family:'Cinzel Decorative',serif;font-size:clamp(28px,6vw,48px);letter-spacing:4px;font-variant-ligatures:none;text-shadow:0 0 30px rgba(168,224,99,0.5);animation:chipPop .35s cubic-bezier(.36,.07,.19,.97) both;}
 .spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(240,192,64,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .dot-pulse{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:dpulse 1.5s ease infinite;flex-shrink:0;}
 @keyframes dpulse{0%,100%{opacity:.25;}50%{opacity:1;}}
-.final-winner{font-family:'Cinzel Decorative',serif;font-size:22px;color:var(--gold);text-align:center;margin:.75rem 0 1.25rem;text-shadow:0 0 40px rgba(240,192,64,.5);line-height:1.4;}
+.final-winner{font-family:'Cinzel Decorative',serif;font-size:22px;letter-spacing:1.5px;color:var(--gold);text-align:center;margin:.75rem 0 1.25rem;text-shadow:0 0 40px rgba(240,192,64,.5);line-height:1.4;}
 .conn-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:7px 14px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);flex-shrink:0;}
 .conn-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);transition:background .3s;} .conn-dot.on{background:var(--success);}
 .cat-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:10px;color:var(--muted);}
@@ -84,6 +85,16 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
 .score-num{font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold);}
 .pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 10px;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
 .pill.gold{border-color:rgba(240,192,64,.35);color:var(--gold);}
+
+/* DRAFT */
+.draft-opt{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;cursor:pointer;text-align:center;color:var(--text);font-family:'DM Sans',sans-serif;transition:border-color .15s,background .15s;margin-bottom:.55rem;}
+.draft-opt:hover:not([disabled]){border-color:var(--border2);}
+.draft-opt.chosen{background:var(--gold-dim);border-color:rgba(240,192,64,.55);cursor:default;}
+.draft-opt[disabled]:not(.chosen){opacity:.35;cursor:default;}
+.draft-opt-name{font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);margin-bottom:4px;}
+.draft-opt-samples{font-size:11px;color:var(--muted);line-height:1.5;}
+.draft-pick-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;}
+.draft-pick-row .pill{margin-left:auto;}
 
 /* SUBMIT */
 .submit-top-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
@@ -100,36 +111,44 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
 .timer-ring-sm.pulse{animation:tpulse .4s ease;}
 @keyframes tpulse{0%{transform:scale(1);}50%{transform:scale(1.15);}100%{transform:scale(1);}}
 
-/* REVEAL — 3 ROW */
-.reveal-screen{display:none;flex-direction:column;height:100vh;overflow:hidden;}
-.reveal-screen.active{display:flex;}
+/* REVEAL */
+.reveal-screen{display:none;flex-direction:column;overflow:hidden;}
+.reveal-screen.active{display:flex;flex:1;min-height:0;}
 .reveal-topbar{background:var(--surface);border-bottom:1px solid var(--border2);padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
 
-.row1{display:flex;border-bottom:2px solid var(--border2);flex-shrink:0;background:var(--surface);}
-.row1-col{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 6px 10px;border-right:1px solid var(--border);min-width:0;}
-.row1-col:last-child{border-right:none;}
-.row1-name{font-size:clamp(11px,2vw,16px);font-weight:500;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
-.row1-name.you{color:var(--gold);}
-.row1-score{font-family:'Cinzel Decorative',serif;font-size:clamp(13px,2.5vw,22px);color:var(--gold);text-align:center;line-height:1.2;margin-bottom:2px;}
-.row1-delta{font-size:11px;color:var(--success);text-align:center;min-height:14px;opacity:0;transition:opacity .3s;}
-.row1-delta.show{opacity:1;}
-.row1-bags{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:flex-end;margin-top:6px;min-height:36px;}
+.reveal-cols{flex:1;display:flex;flex-wrap:wrap;align-content:stretch;overflow:hidden;background:var(--border);gap:1px;}
+.rev-col{flex:1;min-width:80px;display:flex;flex-direction:column;background:var(--bg);}
+.rev-col-header{background:var(--surface);padding:10px 8px 7px;border-bottom:1px solid var(--border);text-align:center;flex-shrink:0;min-height:88px;display:flex;flex-direction:column;justify-content:center;}
+.rev-col-name{font-size:clamp(11px,2vw,16px);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;line-height:1.3;}
+.rev-col-name.you{color:var(--gold);}
+.rev-col-name .star{font-size:10px;line-height:0;vertical-align:middle;position:relative;top:-1px;}
+.rev-col-score{font-family:'Cinzel Decorative',serif;font-size:clamp(17px,3vw,34px);color:var(--gold);line-height:1.2;margin:3px 0;text-align:center;}
+.rev-col-delta{font-size:12px;color:var(--success);min-height:16px;opacity:0;transition:opacity .3s;text-align:center;}
+.rev-power-badge{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;border-radius:5px;padding:2px 7px;margin-top:5px;display:inline-block;}
+.rev-power-badge.dragon{background:rgba(240,192,64,0.12);border:1px solid rgba(240,192,64,0.4);color:var(--gold);}
+.rev-power-badge.heist{background:rgba(255,107,91,0.12);border:1px solid rgba(255,107,91,0.35);color:var(--red2);}
+.rev-col-delta.show{opacity:1;}
+.rev-col-sub-cols{flex:1;display:flex;min-height:0;min-width:0;overflow:visible;}
+.rev-sub-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;padding:10px 4px;gap:10px;overflow:visible;}
 
-.row2{display:none;}
+.rev-event-label{font-family:'Cinzel Decorative',serif;font-size:clamp(8px,1vw,11px);color:var(--gold);background:var(--surface);border:1px solid rgba(240,192,64,.4);border-radius:6px;padding:2px 6px;white-space:normal;word-break:normal;overflow-wrap:normal;max-width:100%;text-align:center;}
+.rev-event-label.success{color:var(--success);border-color:rgba(168,224,99,.4);}
+.rev-event-label.miss{color:var(--red2);border-color:rgba(255,107,91,.35);opacity:.65;}
 
-.row3{flex:1;display:flex;align-items:flex-start;position:relative;background:var(--bg);overflow:hidden;}
-.row3-col{flex:1;display:flex;flex-direction:row;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:2px;padding:8px 2px;border-right:1px solid var(--border);min-width:0;position:relative;min-height:100%;}
-.row3-col:last-child{border-right:none;}
-/* locked answer chip */
+/* locked answer chip (submit screen) */
 .locked-chip{display:flex;align-items:center;gap:8px;background:rgba(168,224,99,0.1);border:1px solid rgba(168,224,99,0.45);border-radius:8px;padding:9px 14px;margin-bottom:6px;color:var(--success);font-size:15px;font-weight:500;}
 .locked-chip-icon{font-size:13px;opacity:.7;flex-shrink:0;}
 .locked-chip-text{flex:1;}
 .chip-pop{animation:chipPop .3s cubic-bezier(.36,.07,.19,.97) both;}
 @keyframes chipPop{0%{transform:scale(.85);opacity:0;}60%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;}}
 
-.event-label-global{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold);white-space:nowrap;background:var(--surface);border:1px solid rgba(240,192,64,.35);border-radius:8px;padding:5px 16px;z-index:2;pointer-events:none;}
+.snatch-overlay{position:fixed;inset:0;z-index:9990;display:flex;align-items:center;justify-content:center;pointer-events:none;animation:snatchBgAnim 2.8s ease both;}
+@keyframes snatchBgAnim{0%,100%{background:rgba(13,10,6,0);}15%,75%{background:rgba(13,10,6,0.62);}}
+.snatch-word{font-family:'Cinzel Decorative',serif;font-size:clamp(52px,12vw,130px);color:var(--red2);text-shadow:0 0 40px rgba(255,107,91,0.95),0 0 90px rgba(255,107,91,0.45);letter-spacing:4px;animation:snatchWordAnim 2.8s ease both;}
+@keyframes snatchWordAnim{0%{transform:scale(0.3) rotate(-10deg);opacity:0;}12%{transform:scale(1.15) rotate(3deg);opacity:1;}20%,75%{transform:scale(1) rotate(0);opacity:1;}100%{transform:scale(0.7);opacity:0;}}
+@keyframes catAnnounce{0%{transform:scale(0.5);opacity:0;}50%{transform:scale(1.06);opacity:1;}100%{transform:scale(1);opacity:1;}}
 
-.reveal-controls{background:var(--surface);border-top:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.reveal-controls{background:var(--surface);border-top:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0;}
 
 .dbag{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
 .dbag.sz-lg{width:52px;height:52px;} .dbag.sz-md{width:40px;height:40px;} .dbag.sz-sm{width:32px;height:32px;}
@@ -141,13 +160,11 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
 .flying-bag{position:fixed;pointer-events:none;z-index:9998;width:52px;height:52px;}
 #coin-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
 
-/* TEST */
-.test-header{background:var(--surface);border-bottom:1px solid var(--border2);padding:8px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;}
-.test-panels{display:flex;flex:1;overflow-x:auto;overflow-y:hidden;}
-.test-panel{flex:1;min-width:280px;max-width:400px;border-right:1px solid var(--border);overflow-y:auto;padding:1rem .9rem;}
-.test-panel:last-child{border-right:none;}
-.test-panel-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:.85rem;display:flex;align-items:center;gap:7px;}
-.host-badge{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(240,192,64,.3);border-radius:20px;padding:2px 7px;font-size:9px;letter-spacing:1px;}
+.final-winner,.score-num,.draft-opt-name,.power-name,
+.category-big,.my-coins-badge,.timer-num-sm,.rev-col-score,.rev-event-label{letter-spacing:1px;}
+.logo,.card-title,.btn,.room-code,.power-name,.final-winner,.score-num,.draft-opt-name,
+.category-big,.my-coins-badge,.timer-num-sm,.rev-col-score,.rev-event-label,.snatch-word{font-variant-ligatures:none;}
+
 </style>
 </head>
 <body>
@@ -163,8 +180,17 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
 <div class="screen active" id="screen-home">
   <div class="center-wrap">
     <div class="logo">Snatch</div>
-    <div class="tagline">Hoard it. Name it. Take it.</div>
     <div style="display:flex;justify-content:center;gap:14px;margin-bottom:1.5rem;" id="home-bags"></div>
+    <div class="card">
+      <div class="card-title">Join a Vault</div>
+      <label>Your Name</label><input type="text" id="join-name" placeholder="Enter your name" maxlength="20"/>
+      <label>Vault Code</label>
+      <input type="text" id="join-code" placeholder="CODE" maxlength="4"
+        style="text-transform:uppercase;letter-spacing:8px;font-family:'Cinzel Decorative',serif;font-size:22px;text-align:center;"/>
+      <button class="btn" onclick="joinGame()">Enter the Vault</button>
+      <div class="error-msg" id="join-error"></div>
+    </div>
+    <div class="or-divider">— or —</div>
     <div class="card">
       <div class="card-title">Open a Vault</div>
       <label>Your Name</label><input type="text" id="host-name" placeholder="Enter your name" maxlength="20"/>
@@ -174,18 +200,7 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
         <option value="2000">2,000 coins</option><option value="3000">3,000 coins</option>
       </select>
       <div class="muted-text" style="margin-top:5px;">Each uncontested hoard = 100 coins. Category chosen randomly each round.</div>
-      <button class="btn" onclick="createGame()">Open the Vault</button>
-      <button class="btn ghost" onclick="enterTestMode()" style="margin-top:7px;">🧪 Test Mode</button>
-    </div>
-    <div class="or-divider">— or —</div>
-    <div class="card">
-      <div class="card-title">Join a Vault</div>
-      <label>Your Name</label><input type="text" id="join-name" placeholder="Enter your name" maxlength="20"/>
-      <label>Vault Code</label>
-      <input type="text" id="join-code" placeholder="XKQZ" maxlength="4"
-        style="text-transform:uppercase;letter-spacing:8px;font-family:'Cinzel Decorative',serif;font-size:22px;text-align:center;"/>
-      <button class="btn ghost" onclick="joinGame()">Enter the Vault</button>
-      <div class="error-msg" id="join-error"></div>
+      <button class="btn ghost" onclick="createGame()">Open the Vault</button>
     </div>
   </div>
 </div>
@@ -202,6 +217,7 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
       <ul class="player-list" id="lobby-players"></ul>
       <div style="display:flex;align-items:center;gap:8px;margin-top:10px;"><div class="dot-pulse"></div><span class="muted-text" id="lobby-ticker">Waiting...</span></div>
       <div class="error-msg" id="lobby-error"></div>
+      <button class="btn ghost sm" id="add-ai-btn" onclick="addAIPlayer()" style="display:none;margin-top:8px;">+ Add AI Player</button>
       <button class="btn" id="start-btn" onclick="startGame()" style="display:none">Begin the Heist</button>
       <div class="muted-text" id="lobby-wait-msg" style="margin-top:8px;text-align:center;display:none;">Waiting for host to start...</div>
     </div>
@@ -211,8 +227,24 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
   </div>
 </div>
 
+<!-- DRAFT -->
+<div class="screen" id="screen-draft">
+  <div class="center-wrap">
+    <div class="logo sm">Snatch</div>
+    <div class="tagline sm" id="draft-card-title">Choose your category for the vault</div>
+
+    <div class="card">
+      <div id="draft-options"></div>
+    </div>
+    <div class="card compact" id="draft-status-card">
+      <div class="card-title" style="margin-bottom:.5rem;">Vault selections</div>
+      <div id="draft-picks-list"></div>
+    </div>
+  </div>
+</div>
+
 <!-- SUBMIT -->
-<div class="screen" id="screen-submit" style="flex-direction:column;height:100vh;">
+<div class="screen" id="screen-submit" style="flex-direction:column;">
   <div class="submit-top-bar" id="submit-top-bar">
     <div class="timer-inline">
       <div class="timer-ring-sm" id="timer-ring">
@@ -242,12 +274,10 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
         <div style="margin-top:.85rem;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:.5rem;">Snatch</div>
         <div id="snatch-inputs"></div>
         <div class="error-msg" id="submit-error"></div>
-        <button class="btn" id="submit-btn" onclick="submitMove()" style="margin-top:1rem">Hoard &amp; Snatch</button>
       </div>
       <div class="submitted-banner" id="submitted-banner" style="display:none;">
-        ✦ Treasures locked in.
-        <div id="submitted-bags" style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;"></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:7px;" id="wait-ticker"></div>
+        <div class="lock-word">Locked In</div>
+        <div id="submitted-bags" style="display:flex;justify-content:center;gap:10px;margin-top:.75rem;"></div>
       </div>
     </div>
   </div>
@@ -256,7 +286,7 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
 <!-- REVEAL -->
 <div class="reveal-screen" id="screen-reveal">
   <div class="reveal-topbar">
-    <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);">Snatch</div>
+    <div style="font-family:'Cinzel Decorative',serif;font-size:13px;color:var(--gold);letter-spacing:1px;">Snatch</div>
     <div class="pill gold" id="rev-category-pill"></div>
     <div class="pill">Round <span id="rev-round-num"></span></div>
     <div style="flex:1;height:2px;background:var(--surface2);border-radius:2px;overflow:hidden;margin:0 8px;">
@@ -264,11 +294,8 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
     </div>
     <div style="font-size:11px;color:var(--muted);">Goal: <span id="rev-goal" style="color:var(--gold);font-family:'Cinzel Decorative',serif;font-size:13px;"></span></div>
   </div>
-  <div class="row1" id="row1"></div>
-  <div class="row2" id="row2"></div>
-  <div class="row3" id="row3"></div>
+  <div class="reveal-cols" id="reveal-cols"></div>
   <div class="reveal-controls">
-    <div class="muted-text" style="flex:1;" id="reveal-status"></div>
     <button class="btn sm" id="reveal-next-btn" onclick="sendRevealNext()" style="display:none;">Reveal Next →</button>
     <div id="reveal-waiting-msg" style="display:none;font-size:12px;color:var(--muted);align-items:center;gap:7px;"><span class="spinner"></span> Waiting for host</div>
     <button class="btn sm" id="next-round-btn" onclick="nextRound()" style="display:none;">Next Round →</button>
@@ -279,59 +306,20 @@ input.locked{background:rgba(168,224,99,0.08);border-color:rgba(168,224,99,0.4)!
 <!-- FINAL -->
 <div class="screen" id="screen-final">
   <div class="center-wrap">
-    <div class="logo sm">Snatch</div><div class="tagline sm">The vault is empty.</div>
+    <div class="logo sm">Snatch</div>
     <div style="display:flex;justify-content:center;gap:14px;margin-bottom:1.25rem;" id="final-bags"></div>
     <div class="card">
       <div class="card-title" style="text-align:center;">Final Standings</div>
       <div class="final-winner" id="final-winner"></div>
       <table class="score-table" id="final-score-table"></table>
     </div>
-    <button class="btn" onclick="resetToHome()">Crack Another Vault</button>
+    <div id="final-action-area"></div>
   </div>
 </div>
 
-<!-- TEST MODE -->
-<div class="full-screen" id="screen-test">
-  <div class="test-header">
-    <div style="font-family:'Cinzel Decorative',serif;font-size:15px;color:var(--gold);">Snatch</div>
-    <div class="pill gold">🧪 Test</div>
-    <div class="pill">Round <span id="t-round">1</span></div>
-    <div class="pill gold" style="font-size:11px;letter-spacing:0;">📦 <span id="t-category">—</span></div>
-    <div class="pill">Hoarded: <span id="t-hoarded">0</span>/<span id="t-goal">1000</span></div>
-    <div class="pill">Phase: <span id="t-phase">Submitting</span></div>
-    <div style="flex:1;"></div>
-    <button class="btn ghost sm" onclick="resetToHome()">Exit</button>
-    <button class="btn sm" id="t-action-btn" onclick="testAction()">Reveal Round</button>
-  </div>
-  <div class="test-panels" id="test-panels"></div>
-</div>
 
-<script>
-const CATEGORIES={
-  "Fruits":["Apple","Banana","Mango","Strawberry","Grape","Pineapple","Watermelon","Peach","Cherry","Kiwi","Lemon","Lime","Coconut","Blueberry","Raspberry","Papaya","Plum","Pomegranate","Fig","Apricot","Lychee","Guava","Passion Fruit","Dragon Fruit","Cantaloupe"],
-  "Seasons of Survivor":["Borneo","Australian Outback","Africa","Marquesas","Thailand","The Amazon","Pearl Islands","Vanuatu","Palau","Guatemala","Panama","Cook Islands","Fiji","China","Micronesia","Gabon","Tocantins","Samoa","Nicaragua","Redemption Island","South Pacific","Philippines","Caramoan","Blood vs Water","Cagayan","San Juan del Sur","Worlds Apart","Cambodia","Kaoh Rong","Millennials vs Gen X","Game Changers","HHH","Ghost Island","David vs Goliath","Edge of Extinction","Island of the Idols","Winners at War"],
-  "Countries in North America":["United States","Canada","Mexico","Guatemala","Belize","Honduras","El Salvador","Nicaragua","Costa Rica","Panama","Cuba","Jamaica","Haiti","Dominican Republic","Bahamas","Barbados","Trinidad and Tobago","Grenada","Saint Lucia","Antigua and Barbuda","Dominica","Saint Vincent","Saint Kitts and Nevis"],
-  "Disney Animated Characters 90s":["Ariel","Simba","Aladdin","Jasmine","Belle","Beast","Pocahontas","Mulan","Tarzan","Hercules","Hades","Jafar","Scar","Timon","Pumbaa","Genie","Nala","Mufasa","Ursula","Gaston","Lumiere","Cogsworth","Mrs Potts","Flounder","Sebastian","Iago","Zazu","Rafiki","Mushu","Phil"],
-  "US States":["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"],
-  "Olympic Sports":["Swimming","Athletics","Gymnastics","Cycling","Rowing","Sailing","Boxing","Wrestling","Judo","Fencing","Shooting","Archery","Equestrian","Triathlon","Weightlifting","Volleyball","Basketball","Soccer","Tennis","Badminton","Table Tennis","Handball","Hockey","Rugby Sevens","Skateboarding","Surfing","Sport Climbing","Baseball"],
-  "Famous Scientists":["Einstein","Newton","Darwin","Curie","Tesla","Hawking","Galileo","Feynman","Turing","Edison","Faraday","Maxwell","Bohr","Pasteur","Mendel","Lavoisier","Kepler","Copernicus","Archimedes","Oppenheimer","Planck","Heisenberg","Schrodinger","Lovelace","Noether"],
-  "Dog Breeds":["Labrador","Golden Retriever","German Shepherd","Bulldog","Poodle","Beagle","Rottweiler","Yorkshire Terrier","Boxer","Dachshund","Siberian Husky","Great Dane","Doberman","Shih Tzu","Chihuahua","Border Collie","Pomeranian","Maltese","Cocker Spaniel","Dalmatian","Greyhound","Pug","Samoyed","Akita","Weimaraner"],
-  "World Capitals":["Paris","Tokyo","London","Berlin","Rome","Madrid","Beijing","Moscow","Ottawa","Canberra","Brasilia","Cairo","New Delhi","Buenos Aires","Seoul","Mexico City","Jakarta","Ankara","Nairobi","Bangkok","Lisbon","Vienna","Warsaw","Stockholm","Oslo","Copenhagen","Helsinki","Athens","Prague","Budapest"],
-  "Movies from the 2000s":["The Dark Knight","Inception","Avatar","The Lord of the Rings","Finding Nemo","Gladiator","Shrek","Pirates of the Caribbean","Harry Potter","Spider-Man","Ratatouille","Wall-E","Up","No Country for Old Men","There Will Be Blood","Eternal Sunshine","Brokeback Mountain","Crash","Million Dollar Baby","Chicago","A Beautiful Mind","Memento","Cast Away"],
-  "Card Games":["Poker","Blackjack","Rummy","Bridge","Solitaire","Go Fish","War","Uno","Crazy Eights","Snap","Hearts","Spades","Cribbage","Canasta","Pinochle","Baccarat","Old Maid","Concentration","Speed","Slapjack"],
-  "Taylor Swift Albums":["Taylor Swift","Fearless","Speak Now","Red","1989","Reputation","Lover","Folklore","Evermore","Midnights"],
-  "NBA Teams":["Lakers","Celtics","Bulls","Warriors","Heat","Knicks","Spurs","Nets","Bucks","Suns","Mavericks","Clippers","76ers","Raptors","Nuggets","Cavaliers","Pistons","Trail Blazers","Thunder","Jazz"],
-  "Things in a Kitchen":["Refrigerator","Oven","Microwave","Sink","Dishwasher","Toaster","Blender","Cutting board","Knife","Pan","Pot","Colander","Spatula","Whisk","Measuring cup","Rolling pin","Grater","Peeler","Ladle","Tongs"]
-};
-const CAT_NAMES=Object.keys(CATEGORIES);
-const CAT_SETS={};
-Object.entries(CATEGORIES).forEach(([c,items])=>{CAT_SETS[c]=new Set(items.map(i=>i.toLowerCase()));});
-
-function pickCategory(used=[]){
-  const avail=CAT_NAMES.filter(c=>!used.includes(c));
-  const pool=avail.length>0?avail:CAT_NAMES;
-  return pool[Math.floor(Math.random()*pool.length)];
-}
+<script type="module">
+import { CATEGORIES } from './categories.js';
 
 const PARTYKIT_HOST=location.host;
 const COIN=100;
@@ -339,6 +327,10 @@ const BAG_COLORS=['#c8922a','#a06818','#d4a030','#b07820','#e0a828','#986010','#
 
 function lx(h,p){let n=parseInt(h.slice(1),16),r=(n>>16)+p*2.55,g=((n>>8)&255)+p*2.55,b=(n&255)+p*2.55;return'#'+[r,g,b].map(x=>Math.min(255,~~x).toString(16).padStart(2,'0')).join('');}
 function dk(h,p){let n=parseInt(h.slice(1),16),r=(n>>16)-p*2.55,g=((n>>8)&255)-p*2.55,b=(n&255)-p*2.55;return'#'+[r,g,b].map(x=>Math.max(0,~~x).toString(16).padStart(2,'0')).join('');}
+function handSVG(sz){
+  return `<span style="font-size:${sz}px;line-height:1;display:block;user-select:none;">🫳</span>`;
+}
+
 function bagSVG(c='#c8922a',size=52){
   const l=lx(c,22),d=dk(c,18),d2=dk(c,8);
   return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -408,14 +400,13 @@ function flyBag(fromEl,toEl,colorIdx,onLand){
   requestAnimationFrame(step);
 }
 
-let ws=null,G=null;
+let ws=null,G=null,displayedScores={};
 let myId=uid(),myName='',isHost=false;
 let dragonActive=false,heistActive=false,dragonUsed=false,heistUsed=false;
 let hasSubmitted=false,timerInterval=null;
 let revealedSteps=0,revealPlayerOrder=[];
-let testMode=false,testPlayers=[];
-const testPanelState={};
-let lockedHoards=[],lockedSnatches=[];
+let aiPlayerIds=new Set(),aiDraftScheduled=false;
+let lockedHoards=[],lockedSnatches=[],lockTimer=null;
 
 function uid(){return Math.random().toString(36).slice(2,9);}
 function el(id){return document.getElementById(id);}
@@ -426,7 +417,35 @@ function showScreen(name){
   el('screen-'+name).classList.add('active');
 }
 
-function isValidAnswer(cat,val){return(CAT_SETS[cat]||new Set()).has(norm(val));}
+const FILLER=new Set(['the','of','a','an']);
+function normFuzzy(s){return s.trim().toLowerCase().replace(/-/g,' ').replace(/[^a-z0-9 ]/g,'').split(/\s+/).filter(w=>w&&!FILLER.has(w)).join(' ');}
+function levenshtein(a,b){
+  if(Math.abs(a.length-b.length)>1)return 2;
+  const m=a.length,n=b.length,dp=[];
+  for(let i=0;i<=m;i++){dp[i]=[];for(let j=0;j<=n;j++)dp[i][j]=i===0?j:j===0?i:0;}
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+function matchAnswer(val){
+  if(!val.trim())return null;
+  const items=CATEGORIES[G?.category]||G?.categoryItems;
+  if(!items||!items.length)return val.trim();
+  const v=normFuzzy(val);
+  for(const item of items){
+    const parts=item.split('|');
+    const canonical=parts[0];
+    if(normFuzzy(canonical)===v)return canonical;
+    for(let i=1;i<parts.length;i++){if(normFuzzy(parts[i])===v)return canonical;}
+  }
+  for(const item of items){
+    const parts=item.split('|');
+    const canonical=parts[0];
+    const c=normFuzzy(canonical);
+    if(c.length>=4&&v.length>=4&&levenshtein(c,v)<=1)return canonical;
+  }
+  return null;
+}
+function isValidAnswer(val){return!!matchAnswer(val);}
 
 function connect(code,onOpen){
   const proto=location.protocol==='https:'?'wss':'ws';
@@ -445,8 +464,18 @@ function handleState(state){
   G=state;
   const active=document.querySelector('.screen.active,.full-screen.active,.reveal-screen.active')?.id;
   const phase=state.phase;
-  if(phase==='lobby'){if(active!=='screen-lobby')showScreen('lobby');renderLobby(state);}
-  else if(phase==='submitting'){if(active!=='screen-submit')initSubmit(state);else if(hasSubmitted)updateWaitTicker(state);}
+  if(phase==='lobby'){
+    if(active==='screen-final'){hasSubmitted=false;dragonActive=false;heistActive=false;dragonUsed=false;heistUsed=false;revealedSteps=0;lockedHoards=[];lockedSnatches=[];clearTimeout(lockTimer);displayedScores={};aiDraftScheduled=false;}
+    if(active!=='screen-lobby')showScreen('lobby');renderLobby(state);
+  }
+  else if(phase==='drafting'){
+    if(active!=='screen-draft'){renderDraft(state);showScreen('draft');}
+    else updateDraft(state);
+    if(isHost&&aiPlayerIds.size>0&&!aiDraftScheduled){aiDraftScheduled=true;scheduleAIDraftPicks();}
+  }
+  else if(phase==='submitting'){
+    if(active!=='screen-submit')initSubmit(state);else if(hasSubmitted)updateWaitTicker(state);
+  }
   else if(phase==='revealing'){
     if(active!=='screen-reveal'){revealedSteps=0;renderRevealScreen(state);}
     else syncReveal(state);
@@ -474,36 +503,67 @@ function renderLobby(state){
   el('lobby-code').textContent=state.code||el('conn-room').textContent;
   el('lobby-goal').textContent=state.coinGoal.toLocaleString();
   const ps=Object.entries(state.players);
-  el('lobby-players').innerHTML=ps.map(([id,p])=>`<li class="player-chip${id===state.hostId?' host':''}${id===myId?' you':''}">${p.name}${id===myId?' (you)':''}</li>`).join('');
-  el('lobby-ticker').textContent=`${ps.length} thief${ps.length===1?'':'ves'} assembled`;
+  el('lobby-players').innerHTML=ps.map(([id,p])=>`<li class="player-chip${id===state.hostId?' host':''}${id===myId?' you':''}">${p.name}${id===myId?' (you)':''}${aiPlayerIds.has(id)?' · AI':''}</li>`).join('');
+  el('lobby-ticker').textContent=`${ps.length} thie${ps.length===1?'f':'ves'} assembled`;
+  const usedNames=Object.values(state.players).map(p=>p.name);
+  const canAddMore=isHost&&BOT_NAMES.some(n=>!usedNames.includes(n));
+  el('add-ai-btn').style.display=canAddMore?'inline-flex':'none';
   el('start-btn').style.display=(isHost&&ps.length>=2)?'block':'none';
   el('lobby-wait-msg').style.display=!isHost?'block':'none';
 }
 function copyCode(){navigator.clipboard?.writeText(el('lobby-code').textContent).catch(()=>{});}
 function startGame(){send({type:'start',playerId:myId});}
 
+function showCategoryAnnouncement(category){
+  const destEl=el('sub-category-big');
+  destEl.style.opacity='0';
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;z-index:9990;display:flex;align-items:center;justify-content:center;pointer-events:none;';
+  const bg=document.createElement('div');
+  bg.style.cssText='position:absolute;inset:0;background:rgba(13,10,6,0.25);transition:opacity .9s;';
+  const text=document.createElement('div');
+  text.textContent=category;
+  text.style.cssText='font-family:\'Cinzel Decorative\',serif;font-size:clamp(36px,7vw,70px);color:var(--gold);'+
+    'text-align:center;padding:0 1.5rem;letter-spacing:3px;font-variant-ligatures:none;'+
+    'text-shadow:0 0 60px rgba(240,192,64,0.8),0 0 120px rgba(240,192,64,0.4);'+
+    'animation:catAnnounce .55s cubic-bezier(.36,.07,.19,.97) both;'+
+    'transition:transform .9s cubic-bezier(.4,0,.2,1),opacity .9s;position:relative;z-index:1;';
+  overlay.appendChild(bg);overlay.appendChild(text);
+  document.body.appendChild(overlay);
+  setTimeout(()=>{
+    destEl.style.transition='opacity .9s';
+    destEl.style.opacity='1';
+    bg.style.opacity='0';
+    text.style.transform='translateY(-40px) scale(0.88)';
+    text.style.opacity='0';
+    setTimeout(()=>{overlay.remove();destEl.style.transition='';},1000);
+  },1700);
+}
+
 function initSubmit(state){
-  hasSubmitted=false;dragonActive=false;heistActive=false;lockedHoards=[];lockedSnatches=[];
+  hasSubmitted=false;dragonActive=false;heistActive=false;lockedHoards=[];lockedSnatches=[];clearTimeout(lockTimer);
   const me=state.players[myId]||{};
   dragonUsed=me.dragonUsed||false;heistUsed=me.heistUsed||false;
   el('sub-category-big').textContent=state.category;
   el('sub-my-score').textContent=(me.score||0).toLocaleString();
   el('dragon-btn').disabled=dragonUsed;el('dragon-btn').classList.remove('dragon-on');
   el('heist-btn').disabled=heistUsed;el('heist-btn').classList.remove('heist-on');
-  renderSubmitInputs(state.category);
-  el('submit-btn').style.display='block';el('submit-error').textContent='';el('submitted-banner').style.display='none';
+  renderSubmitInputs();
+  el('submit-error').textContent='';el('submitted-banner').style.display='none';
   startClientTimer(state.timerStart,state.timerDuration);
   showScreen('submit');
+  showCategoryAnnouncement(state.category);
+  if(isHost&&aiPlayerIds.size>0)scheduleAISubmissions();
 }
 
-function renderSubmitInputs(cat){
+function renderSubmitInputs(){
   const dc=dragonActive?3:1,hc=heistActive?3:1;
   el('hoard-inputs').innerHTML=Array.from({length:dc},(_,i)=>autoInput(`h${i}`,'Hoard...')).join('');
   el('snatch-inputs').innerHTML=Array.from({length:hc},(_,i)=>autoInput(`s${i}`,'Snatch...')).join('');
-  lockedHoards.forEach((v,i)=>{const inp=el(`inp-h${i}`);if(inp&&v){inp.value=v;lockField(inp,cat,i,'h');}});
-  lockedSnatches.forEach((v,i)=>{const inp=el(`inp-s${i}`);if(inp&&v){inp.value=v;lockField(inp,cat,i,'s');}});
+  lockedHoards.forEach((v,i)=>{const inp=el(`inp-h${i}`);if(inp&&v){inp.value=v;lockField(inp,i,'h');}});
+  lockedSnatches.forEach((v,i)=>{const inp=el(`inp-s${i}`);if(inp&&v){inp.value=v;lockField(inp,i,'s');}});
   document.querySelectorAll('#hoard-inputs input:not(.locked),#snatch-inputs input:not(.locked)').forEach(inp=>{
-    inp.addEventListener('input',()=>onFieldInput(inp,cat));
+    inp.addEventListener('input',()=>onFieldInput(inp));
   });
   const first=document.querySelector('#hoard-inputs input:not(.locked),#snatch-inputs input:not(.locked)');
   if(first)setTimeout(()=>first.focus(),50);
@@ -513,32 +573,36 @@ function autoInput(id,ph){
   return `<div class="vi-wrap"><input type="text" id="inp-${id}" placeholder="${ph}" autocomplete="off" autocorrect="off" autocapitalize="words"/><span class="vi">✓</span></div>`;
 }
 
-function onFieldInput(inp,cat){
+function onFieldInput(inp){
   const wrap=inp.closest('.vi-wrap');
-  const valid=inp.value.trim()&&isValidAnswer(cat,inp.value);
+  const valid=inp.value.trim()&&isValidAnswer(inp.value);
   if(wrap)wrap.classList.toggle('valid',!!valid);
+  clearTimeout(lockTimer);
   if(valid){
     const id=inp.id,type=id.includes('-h')?'h':'s',idx=parseInt(id.replace(`inp-${type}`,''));
-    lockField(inp,cat,idx,type);
-    setTimeout(()=>{
-      const all=[...document.querySelectorAll('#hoard-inputs input:not(.locked),#snatch-inputs input:not(.locked)')];
-      if(all.length)all[0].focus();
-      else maybeAutoSubmit(cat);
-    },80);
+    lockTimer=setTimeout(()=>{
+      const canonical=matchAnswer(inp.value);
+      if(!canonical)return;
+      if([...lockedHoards,...lockedSnatches].some(x=>x&&normFuzzy(x)===normFuzzy(canonical))){inp.value='';if(wrap)wrap.classList.remove('valid');return;}
+      lockField(inp,idx,type,canonical);
+      setTimeout(()=>{
+        const all=[...document.querySelectorAll('#hoard-inputs input:not(.locked),#snatch-inputs input:not(.locked)')];
+        if(all.length)all[0].focus();
+        else maybeAutoSubmit();
+      },80);
+    },400);
   }
 }
 
-function lockField(inp,cat,idx,type){
+function lockField(inp,idx,type,val){
+  val=val||inp.value.trim();
   const wrap=inp.closest('.vi-wrap');
-  const val=inp.value.trim();
-  // Replace the vi-wrap with a locked chip
   const chip=document.createElement('div');
   chip.className='locked-chip';
   chip.innerHTML=`<span class="locked-chip-icon">✦</span><span class="locked-chip-text">${val}</span>`;
   chip.dataset.idx=idx;chip.dataset.type=type;
   if(wrap)wrap.replaceWith(chip);
   else inp.replaceWith(chip);
-  // animate in
   chip.classList.add('chip-pop');
   if(type==='h')lockedHoards[idx]=val;
   else lockedSnatches[idx]=val;
@@ -555,13 +619,13 @@ function toggleDragon(){
   if(dragonUsed)return;
   if(heistActive){heistActive=false;el('heist-btn').classList.remove('heist-on');}
   dragonActive=!dragonActive;el('dragon-btn').classList.toggle('dragon-on',dragonActive);
-  lockedHoards=[];renderSubmitInputs(G.category);
+  lockedHoards=[];renderSubmitInputs();
 }
 function toggleHeist(){
   if(heistUsed)return;
   if(dragonActive){dragonActive=false;el('dragon-btn').classList.remove('dragon-on');}
   heistActive=!heistActive;el('heist-btn').classList.toggle('heist-on',heistActive);
-  lockedSnatches=[];renderSubmitInputs(G.category);
+  lockedSnatches=[];renderSubmitInputs();
 }
 
 function startClientTimer(serverStart,dur){
@@ -581,158 +645,179 @@ function startClientTimer(serverStart,dur){
 
 function submitMove(){
   if(!G||hasSubmitted)return;
-  const cat=G.category,items=CAT_SETS[cat]||new Set();
   const dc=dragonActive?3:1,hc=heistActive?3:1;
   let hoards=[],snatches=[];
   for(let i=0;i<dc;i++){
     const v=lockedHoards[i]||(el(`inp-h${i}`)?.value||'').trim();
     if(!v){el('submit-error').textContent=`Fill in hoard ${i+1}`;return;}
-    if(!items.has(norm(v))){el('submit-error').textContent=`"${v}" not in category`;return;}
+    if(!isValidAnswer(v)){el('submit-error').textContent=`"${v}" not in category`;return;}
     hoards.push(v);
   }
   for(let i=0;i<hc;i++){
     const v=lockedSnatches[i]||(el(`inp-s${i}`)?.value||'').trim();
     if(!v){el('submit-error').textContent=`Fill in snatch ${i+1}`;return;}
-    if(!items.has(norm(v))){el('submit-error').textContent=`"${v}" not in category`;return;}
+    if(!isValidAnswer(v)){el('submit-error').textContent=`"${v}" not in category`;return;}
     snatches.push(v);
   }
   const hn=hoards.map(norm),sn=snatches.map(norm);
-  for(const h of hn)if(sn.includes(h)){el('submit-error').textContent=`Can't hoard and snatch the same treasure`;return;}
-  if(new Set([...hn,...sn]).size!==hn.length+sn.length){el('submit-error').textContent=`Duplicate treasure`;return;}
   el('submit-error').textContent='';
   if(timerInterval)clearInterval(timerInterval);
   send({type:'submit',playerId:myId,hoards,snatches,dragon:dragonActive,heist:heistActive});
   dragonUsed=dragonUsed||dragonActive;heistUsed=heistUsed||heistActive;
-  hasSubmitted=true;el('submit-btn').style.display='none';el('submitted-banner').style.display='block';
+  hasSubmitted=true;el('submitted-banner').style.display='block';
   const bc=el('submitted-bags');bc.innerHTML='';
   hoards.forEach((h,i)=>{
     const w=document.createElement('div');w.style.cssText='display:flex;flex-direction:column;align-items:center;gap:3px;';
     const b=document.createElement('div');b.className='dbag slam';b.innerHTML=bagSVG(BAG_COLORS[i%BAG_COLORS.length],44);
-    const lb=document.createElement('div');lb.style.cssText='font-size:10px;color:var(--muted);text-align:center;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';lb.textContent=h;
-    w.appendChild(b);w.appendChild(lb);bc.appendChild(w);
+    w.appendChild(b);bc.appendChild(w);
     setTimeout(()=>{const{x,y}=elCenter(b);sprayCoins(x,y,14);},i*100);
   });
   updateWaitTicker(G);
 }
-function updateWaitTicker(state){
-  const subs=state.submissions[state.currentRound]||{},total=Object.keys(state.players).length,done=Object.keys(subs).length;
-  const waiting=Object.entries(state.players).filter(([id])=>!subs[id]).map(([,p])=>p.name);
-  el('wait-ticker').innerHTML=done<total?`Waiting on: ${waiting.join(', ')}`:`All in — revealing soon...`;
-}
+function updateWaitTicker(state){}
 
 function renderRevealScreen(state){
   const round=state.currentRound;
   el('rev-category-pill').textContent=state.category;
   el('rev-round-num').textContent=round;
   el('rev-goal').textContent=state.coinGoal.toLocaleString();
-  el('rev-progress').style.width=Math.min(100,state.totalHoarded/state.coinGoal*100)+'%';
+  const leadScore=Math.max(...Object.values(state.players).map(p=>p.score));
+  el('rev-progress').style.width=Math.min(100,leadScore/state.coinGoal*100)+'%';
   revealPlayerOrder=Object.keys(state.players);
-  buildRow1(state);buildRow2();buildRow3();
+  // init displayed scores to pre-round values
+  const pts=state.roundPoints[round]||{};
+  revealPlayerOrder.forEach(pid=>{displayedScores[pid]=(state.players[pid].score||0)-(pts[pid]||0);});
+  buildRevealCols(state);
   showScreen('reveal');
   syncReveal(state);
 }
 
-function buildRow1(state){
-  el('row1').innerHTML=revealPlayerOrder.map(pid=>{
+function buildRevealCols(state){
+  const round=state.currentRound;
+  const makeCol=pid=>{
     const p=state.players[pid];
-    return `<div class="row1-col" id="r1col-${pid}">
-      <div class="row1-name${pid===myId?' you':''}">${p.name}${pid===myId?' ★':''}</div>
-      <div class="row1-score" id="r1score-${pid}">${p.score.toLocaleString()}</div>
-      <div class="row1-delta" id="r1delta-${pid}"></div>
-      <div class="row1-bags" id="r1bags-${pid}"></div>
+    const sub=state.submissions[round]?.[pid]||{};
+    const badge=sub.dragon
+      ?`<div class="rev-power-badge dragon">🐉 Dragon's Hoard</div>`
+      :sub.heist
+      ?`<div class="rev-power-badge heist">⚡ Heist</div>`
+      :'';
+    return `<div class="rev-col" id="rcol-${pid}">
+      <div class="rev-col-header">
+        <div class="rev-col-name${pid===myId?' you':''}">${p.name}${pid===myId?' <span class="star">★</span>':''}</div>
+        <div class="rev-col-score" id="rcscore-${pid}">${(displayedScores[pid]||0).toLocaleString()}</div>
+        <div class="rev-col-delta" id="rcdelta-${pid}"></div>
+        ${badge}
+      </div>
+      <div class="rev-col-sub-cols">
+        <div class="rev-sub-col" id="rcbags-hoard-${pid}"></div>
+        <div class="rev-sub-col" id="rcbags-snatch-${pid}"></div>
+      </div>
     </div>`;
-  }).join('');
+  };
+  el('reveal-cols').innerHTML=revealPlayerOrder.map(makeCol).join('');
 }
-function buildRow2(){el('row2').innerHTML=revealPlayerOrder.map(pid=>`<div class="row2-col" id="r2col-${pid}"></div>`).join('');}
-function buildRow3(){el('row3').innerHTML=revealPlayerOrder.map(pid=>`<div class="row3-col" id="r3col-${pid}"></div>`).join('');}
 
 function syncReveal(state){
   const round=state.currentRound;
   const{revealGroups}=state.revealData[round]||{revealGroups:[]};
   const step=state.revealStep||0;
-  const pts=state.roundPoints[round]||{};
   for(let i=revealedSteps;i<step;i++){const group=revealGroups[i];if(group)revealGroup(group,state,i);}
   revealedSteps=step;
-  const allRevealed=step>=revealGroups.length;
+  const subs=state.submissions[round]||{};
+  const allHoards=(state.revealData[round]||{}).allHoards||{};
+  const hasMisses=revealPlayerOrder.some(pid=>
+    (subs[pid]?.snatches||[]).some(s=>
+      (allHoards[s.trim().toLowerCase()]||[]).filter(id=>id!==pid).length===0
+    )
+  );
+  const allGroupsRevealed=step>=revealGroups.length;
+  const missesRevealed=step>revealGroups.length;
   el('reveal-next-btn').style.display='none';
   el('reveal-waiting-msg').style.display='none';
   el('next-round-btn').style.display='none';
   el('waiting-next-btn').style.display='none';
-  if(!allRevealed){
-    el('reveal-status').textContent=`${step} of ${revealGroups.length} revealed`;
+  if(!allGroupsRevealed){
+    if(isHost)el('reveal-next-btn').style.display='inline-flex';
+    else el('reveal-waiting-msg').style.display='flex';
+  }else if(hasMisses&&!missesRevealed){
     if(isHost)el('reveal-next-btn').style.display='inline-flex';
     else el('reveal-waiting-msg').style.display='flex';
   }else{
-    el('reveal-status').textContent='All revealed';
     if(isHost)el('next-round-btn').style.display='inline-flex';
     else el('waiting-next-btn').style.display='inline-flex';
+    revealPlayerOrder.forEach(pid=>{
+      if(el(`rcmiss-${pid}`))return;
+      const sentinel=document.createElement('div');
+      sentinel.id=`rcmiss-${pid}`;sentinel.style.display='none';
+      const snatchEl=el(`rcbags-snatch-${pid}`);if(!snatchEl)return;
+      snatchEl.appendChild(sentinel);
+      (subs[pid]?.snatches||[]).forEach(s=>{
+        if((allHoards[s.trim().toLowerCase()]||[]).filter(id=>id!==pid).length>0)return;
+        const wrap=document.createElement('div');
+        wrap.style.cssText='display:flex;flex-direction:column;align-items:center;';
+        const lbl=document.createElement('div');
+        lbl.className='rev-event-label chip-pop miss';lbl.textContent=s;
+        wrap.appendChild(lbl);snatchEl.appendChild(wrap);
+      });
+    });
   }
 }
 
 function revealGroup(group,state,groupIdx){
   const{treasure,pids,snatchers}=group;
   const tKey=treasure.replace(/\W/g,'-');
-  const round=state.currentRound;
-  const pts=state.roundPoints[round]||{};
+  const isSnatched=snatchers.length>0;
 
-  // Drop bags into row3 under each hoarder
+  // Drop label + bag into each hoarder's hoard sub-col
   pids.forEach((pid,i)=>{
-    const col=el(`r3col-${pid}`);if(!col)return;
     const colIdx=revealPlayerOrder.indexOf(pid);
+    const bagsEl=el(`rcbags-hoard-${pid}`);if(!bagsEl)return;
+    const wrap=document.createElement('div');
+    wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:5px;';
+    const lbl=document.createElement('div');
+    lbl.className='rev-event-label chip-pop';lbl.id=`rclbl-${pid}-${tKey}`;lbl.textContent=treasure;
     const bagEl=document.createElement('div');
-    bagEl.className='dbag sz-lg slam';bagEl.id=`r3bag-${pid}-${tKey}`;
-    bagEl.innerHTML=bagSVG(BAG_COLORS[colIdx%BAG_COLORS.length],56);
-    col.appendChild(bagEl);
+    bagEl.className='dbag sz-lg slam';bagEl.id=`rcbag-${pid}-${tKey}`;
+    bagEl.innerHTML=bagSVG(BAG_COLORS[colIdx%BAG_COLORS.length],52);
+    wrap.appendChild(lbl);wrap.appendChild(bagEl);bagsEl.appendChild(wrap);
     setTimeout(()=>{const{x,y}=elCenter(bagEl);sprayCoins(x,y,10);},i*120+80);
   });
 
-  // Centered treasure label across the whole event row
-  const row3=el('row3');
-  row3.querySelectorAll('.event-label-global').forEach(l=>l.remove());
-  const lbl=document.createElement('div');
-  lbl.className='event-label-global';
-  lbl.textContent=treasure;
-  row3.appendChild(lbl);
-
   const flyDelay=pids.length*120+600;
-  let landCount=0;
-  const totalFlights=pids.length;
 
-  pids.forEach((pid,i)=>{
-    const thieves=snatchers.filter(id=>id!==pid);
-    const bagEl=document.getElementById(`r3bag-${pid}-${tKey}`);if(!bagEl)return;
+  if(isSnatched){
+    setTimeout(()=>showSnatchedOverlay(),flyDelay-200);
 
-    setTimeout(()=>{
-      if(thieves.length===0){
-        // Kept — fly up to hoarder's bag zone in row1
-        const colIdx=revealPlayerOrder.indexOf(pid);
-        const destCol=el(`r1bags-${pid}`);if(!destCol)return;
-        flyBag(bagEl,destCol,colIdx,()=>{
-          bagEl.classList.add('gone');
-          addBagToRow2(pid,colIdx,treasure,true);
-          const{x,y}=elCenter(destCol);sprayCoins(x,y,10);
-          // update that player's score on land
-          updateScoreForPlayer(pid,state,pts);
-          landCount++;
-          if(landCount===totalFlights)onAllLanded(state,pts,round);
-        });
-      }else{
+    pids.forEach((pid,i)=>{
+      const bagEl=el(`rcbag-${pid}-${tKey}`);
+      setTimeout(()=>{
+        if(!bagEl)return;
+        const lblEl=el(`rclbl-${pid}-${tKey}`);
+        if(lblEl)lblEl.classList.add('miss');
         bagEl.classList.add('gone');
-        let thiefLanded=0;
-        thieves.forEach((thiefId,ti)=>{
+        snatchers.forEach((thiefId,ti)=>{
           const thiefColIdx=revealPlayerOrder.indexOf(thiefId);
-          const destCol=el(`r1bags-${thiefId}`);if(!destCol)return;
+          const thiefBagsEl=el(`rcbags-snatch-${thiefId}`);if(!thiefBagsEl)return;
           const r=bagEl.getBoundingClientRect();
-          const fly=document.createElement('div');
           const fsz=64;
+          const fly=document.createElement('div');
           fly.className='flying-bag';
           fly.innerHTML=bagSVG(BAG_COLORS[thiefColIdx%BAG_COLORS.length],fsz);
           fly.style.cssText=`left:${r.left+r.width/2-fsz/2}px;top:${r.top+r.height/2-fsz/2}px;width:${fsz}px;height:${fsz}px;`;
           document.body.appendChild(fly);
           const from={x:r.left+r.width/2-fsz/2,y:r.top+r.height/2-fsz/2};
-          const toR=destCol.getBoundingClientRect();
-          const to={x:toR.left+toR.width/2-fsz/2,y:toR.top+toR.height/2-fsz/2};
-          const cpx=from.x+(to.x-from.x)*.5,cpy=Math.min(from.y,to.y)-Math.abs(to.x-from.x)*.5-60;
+          const toR=thiefBagsEl.getBoundingClientRect();
+          const to={x:toR.left+toR.width/2-fsz/2,y:toR.top+14};
+          const hSz=80,hHSz=hSz;
+          const movingRight=to.x>=from.x;
+          const handFly=document.createElement('div');
+          handFly.style.cssText=`position:fixed;pointer-events:none;z-index:9999;width:${hSz}px;`+
+            `left:${from.x+fsz/2-hSz/2}px;top:${from.y-hHSz}px;`+
+            `transform:${movingRight?'scaleX(-1)':''};transition:opacity .35s;`;
+          handFly.innerHTML=handSVG(hSz);
+          document.body.appendChild(handFly);
+          const cpx=from.x+(to.x-from.x)*.5,cpy=Math.min(from.y,to.y)-Math.abs(to.x-from.x)*.35-50;
           const dur=700,st=performance.now();
           function stepFly(now){
             const t=Math.min(1,(now-st)/dur),e=1-(1-t)*(1-t)*(1-t);
@@ -740,37 +825,88 @@ function revealGroup(group,state,groupIdx){
             const by=(1-e)*(1-e)*from.y+2*(1-e)*e*cpy+e*e*to.y;
             fly.style.left=bx+'px';fly.style.top=by+'px';
             fly.style.transform=`rotate(${e*-35}deg) scale(${1+e*.1})`;
+            handFly.style.left=(bx+fsz/2-hSz/2)+'px';handFly.style.top=(by-hHSz)+'px';
             if(t<1){requestAnimationFrame(stepFly);}
             else{
+              handFly.style.opacity='0';setTimeout(()=>handFly.remove(),400);
               fly.style.transition='transform .22s cubic-bezier(.36,.07,.19,.97)';
               fly.style.transform='scale(1.18,.82)';
               setTimeout(()=>{fly.style.transform='scale(.93,1.07)';setTimeout(()=>{
                 fly.remove();
-                addBagToRow2(thiefId,thiefColIdx,treasure,false);
-                const{x,y}=elCenter(destCol);sprayCoins(x,y,14);
-                // update thief score on land
-                updateScoreForPlayer(thiefId,state,pts);
-                thiefLanded++;
-                if(thiefLanded===thieves.length){
-                  landCount++;
-                  if(landCount===totalFlights)onAllLanded(state,pts,round);
-                }
+                addBagToCol(thiefId,thiefColIdx,treasure);
+                const{x,y}=elCenter(thiefBagsEl);sprayCoins(x,y,14);
+                displayedScores[thiefId]=(displayedScores[thiefId]||0)+100;
+                updateDisplayedScore(thiefId,100);
               },100);},120);
             }
           }
           setTimeout(()=>requestAnimationFrame(stepFly),ti*80);
         });
-      }
-    },flyDelay+i*200);
-  });
+      },flyDelay+i*200);
+    });
+  }else{
+    pids.forEach((pid,i)=>{
+      const bagEl=el(`rcbag-${pid}-${tKey}`);
+      const lblEl=el(`rclbl-${pid}-${tKey}`);
+      setTimeout(()=>{
+        if(!bagEl)return;
+        if(lblEl)lblEl.classList.add('success');
+        bagEl.classList.add('kept-anim');
+        bagEl.style.filter='drop-shadow(0 0 10px rgba(168,224,99,0.9))';
+        setTimeout(()=>bagEl.style.filter='',800);
+        const{x,y}=elCenter(bagEl);sprayCoins(x,y,8);
+        displayedScores[pid]=(displayedScores[pid]||0)+100;
+        updateDisplayedScore(pid,100);
+      },flyDelay+i*200);
+    });
+  }
 }
 
-function updateScoreForPlayer(pid,state,pts){
-  const scoreEl=el(`r1score-${pid}`);
-  const deltaEl=el(`r1delta-${pid}`);
-  const p=state.players[pid];
-  if(scoreEl)scoreEl.textContent=p.score.toLocaleString();
-  const delta=pts[pid]||0;
+function showSnatchedOverlay(){
+  const overlay=document.createElement('div');
+  overlay.className='snatch-overlay';
+  overlay.innerHTML='<div class="snatch-word">SNATCHED!</div>';
+  document.body.appendChild(overlay);
+  setTimeout(()=>overlay.remove(),2900);
+}
+
+function addBagToCol(pid,colIdx,label){
+  const bagsEl=el(`rcbags-snatch-${pid}`);if(!bagsEl)return;
+  const tKey='grp-'+label.replace(/\W/g,'-');
+  let wrap=bagsEl.querySelector(`[data-tkey="${tKey}"]`);
+  let stackEl;
+  if(!wrap){
+    wrap=document.createElement('div');
+    wrap.dataset.tkey=tKey;
+    wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px;';
+    const lbl=document.createElement('div');
+    lbl.className='rev-event-label chip-pop success';lbl.textContent=label;
+    wrap.appendChild(lbl);
+    stackEl=document.createElement('div');
+    stackEl.className='bag-stack';
+    stackEl.style.cssText='position:relative;width:52px;height:52px;flex-shrink:0;';
+    wrap.appendChild(stackEl);
+    bagsEl.appendChild(wrap);
+  }else{
+    stackEl=wrap.querySelector('.bag-stack');
+  }
+  const n=stackEl.querySelectorAll('.dbag').length;
+  const xStep=18;
+  stackEl.style.width=(52+n*xStep)+'px';
+  stackEl.style.height='52px';
+  const bagEl=document.createElement('div');
+  bagEl.className='dbag sz-lg slam';
+  bagEl.style.cssText=`position:absolute;top:0;left:${n*xStep}px;width:52px;height:52px;z-index:${n};`;
+  bagEl.innerHTML=bagSVG(BAG_COLORS[colIdx%BAG_COLORS.length],52);
+  stackEl.appendChild(bagEl);
+  bagEl.style.filter='drop-shadow(0 0 10px rgba(168,224,99,0.9))';
+  setTimeout(()=>bagEl.style.filter='',700);
+}
+
+function updateDisplayedScore(pid,delta){
+  const scoreEl=el(`rcscore-${pid}`);
+  const deltaEl=el(`rcdelta-${pid}`);
+  if(scoreEl)scoreEl.textContent=(displayedScores[pid]||0).toLocaleString();
   if(deltaEl&&delta>0){
     deltaEl.textContent=`+${delta.toLocaleString()}`;
     deltaEl.classList.remove('show');void deltaEl.offsetWidth;
@@ -779,176 +915,192 @@ function updateScoreForPlayer(pid,state,pts){
   }
 }
 
-function onAllLanded(state,pts,round){
-  // nothing extra needed — scores already updated per landing
-}
-
-function addBagToRow2(pid,colIdx,label,kept){
-  const col=el(`r1bags-${pid}`);if(!col)return;
-  const wrap=document.createElement('div');
-  wrap.style.cssText='display:inline-flex;flex-direction:column;align-items:center;gap:2px;';
-  const bagEl=document.createElement('div');
-  bagEl.className=`dbag ${kept?'kept-anim':'slam'}`;
-  bagEl.style.cssText='width:36px;height:36px;';
-  bagEl.innerHTML=bagSVG(BAG_COLORS[colIdx%BAG_COLORS.length],36);
-  const lbl=document.createElement('div');
-  lbl.style.cssText='font-size:8px;color:var(--muted);text-align:center;max-width:40px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
-  lbl.textContent=label;
-  wrap.appendChild(bagEl);wrap.appendChild(lbl);col.appendChild(wrap);
-  if(kept){bagEl.style.filter='drop-shadow(0 0 8px rgba(168,224,99,0.9))';setTimeout(()=>bagEl.style.filter='',700);}
-  else{bagEl.style.filter='drop-shadow(0 0 8px rgba(255,107,91,0.9))';setTimeout(()=>bagEl.style.filter='',700);}
-}
-
-function sendRevealNext(){
-  if(testMode){const groups=G.revealData[G.currentRound]?.revealGroups||[];if(G.revealStep<groups.length){G.revealStep++;syncReveal(G);}}
-  else{send({type:'reveal_next',playerId:myId});}
-}
-function nextRound(){
-  revealedSteps=0;
-  if(testMode){
-    if(G.totalHoarded>=G.coinGoal){G.phase='final';renderFinal(G);}
-    else{
-      G.currentRound++;G.phase='submitting';G.submissions[G.currentRound]={};G.revealStep=0;
-      const nextCat=pickCategory(G.usedCategories);G.category=nextCat;G.usedCategories.push(nextCat);
-      testPlayers.forEach((_,i)=>{setTS(i,'dragonActive',false);setTS(i,'heistActive',false);});
-      showScreen('test');renderTestPanels();updateTestHeader();
-    }
-  }else{send({type:'next_round',playerId:myId});}
-}
+function sendRevealNext(){send({type:'reveal_next',playerId:myId});}
+function nextRound(){revealedSteps=0;send({type:'next_round',playerId:myId});}
 
 function renderFinal(state){
   const sorted=Object.entries(state.players).sort((a,b)=>b[1].score-a[1].score);
-  el('final-winner').textContent=`♛ ${sorted[0][1].name} claims the vault`;
+  const topScore=sorted[0][1].score;
+  const winners=sorted.filter(([,p])=>p.score===topScore).map(([,p])=>p.name);
+  el('final-winner').textContent=winners.length>1?`${winners.slice(0,-1).join(', ')} & ${winners[winners.length-1]} tie for the vault`:`${winners[0]} claims the vault`;
   el('final-score-table').innerHTML=`<tr><th>Rank</th><th>Thief</th><th>Coins</th></tr>`+
-    sorted.map(([pid,p],i)=>`<tr><td>${['♛','♜','♝','♞'][i]||i+1}</td><td>${p.name}${pid===myId?' (you)':''}</td><td class="score-num">${p.score.toLocaleString()}</td></tr>`).join('');
+    sorted.map(([pid,p])=>{const rank=sorted.findIndex(([,q])=>q.score===p.score);return`<tr><td>${rank===0?'♛':rank+1}</td><td>${p.name}${pid===myId?' (you)':''}</td><td class="score-num">${p.score.toLocaleString()}</td></tr>`;}).join('');
   const bc=el('final-bags');bc.innerHTML='';
   [0,1,2].forEach(i=>{const b=document.createElement('div');b.className='dbag sz-lg kept-anim';b.innerHTML=bagSVG(BAG_COLORS[i],52);bc.appendChild(b);setTimeout(()=>{const{x,y}=elCenter(b);sprayCoins(x,y,18);},i*180);});
+  el('final-action-area').innerHTML=isHost
+    ?`<button class="btn" onclick="rematch()">Crack Another Vault</button>`
+    :`<div style="text-align:center;padding:1rem 0;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:12px;"><span class="spinner"></span> Waiting for host to start another vault...</div>
+      <button class="btn ghost" style="margin-top:.5rem;" onclick="resetToHome()">Leave</button>`;
   showScreen('final');
+}
+
+function rematch(){
+  if(!isHost)return;
+  send({type:'rematch',playerId:myId});
 }
 
 function resetToHome(){
   if(ws){ws.close();ws=null;}if(timerInterval)clearInterval(timerInterval);
-  G=null;myId=uid();isHost=false;hasSubmitted=false;testMode=false;testPlayers=[];
+  G=null;myId=uid();isHost=false;hasSubmitted=false;aiPlayerIds=new Set();aiDraftScheduled=false;
   dragonActive=false;heistActive=false;dragonUsed=false;heistUsed=false;
-  revealedSteps=0;lockedHoards=[];lockedSnatches=[];
+  revealedSteps=0;lockedHoards=[];lockedSnatches=[];clearTimeout(lockTimer);displayedScores={};
   el('conn-bar').style.display='none';showScreen('home');
 }
 
-const TEST_NAMES=['Alice','Bob','Carol'];
-function enterTestMode(){
-  testMode=true;isHost=true;
-  const coinGoal=parseInt(el('coin-goal-select').value);
-  testPlayers=TEST_NAMES.map((name,i)=>({id:'test_'+i,name,dragonUsed:false,heistUsed:false}));
-  const players={};testPlayers.forEach(p=>{players[p.id]={name:p.name,score:0,dragonUsed:false,heistUsed:false};});
-  const cat=pickCategory([]);
-  G={code:'TEST',hostId:'test_0',category:cat,coinGoal,currentRound:1,totalHoarded:0,phase:'submitting',
-    players,submissions:{1:{}},roundPoints:{},revealData:{},revealStep:0,timerStart:Date.now(),timerDuration:30,
-    usedCategories:[cat]};
-  showScreen('test');updateTestHeader();renderTestPanels();
-}
-function updateTestHeader(){
-  el('t-round').textContent=G.currentRound;el('t-hoarded').textContent=G.totalHoarded.toLocaleString();
-  el('t-goal').textContent=G.coinGoal.toLocaleString();el('t-phase').textContent=G.phase;
-  el('t-category').textContent=G.category||'—';
-  const btn=el('t-action-btn');
-  if(G.phase==='submitting'){btn.textContent='Reveal Round';btn.disabled=!testAllSubmitted();btn.style.display='inline-flex';}
-  else{btn.style.display='none';}
-}
-function testAllSubmitted(){const subs=G.submissions[G.currentRound]||{};return testPlayers.every(p=>subs[p.id]);}
-function getTS(i,k){return(testPanelState[i]||{})[k];}
-function setTS(i,k,v){if(!testPanelState[i])testPanelState[i]={};testPanelState[i][k]=v;}
-function testToggleDragon(i){const c=getTS(i,'dragonActive');setTS(i,'heistActive',false);setTS(i,'dragonActive',!c);renderTestPanels();}
-function testToggleHeist(i){const c=getTS(i,'heistActive');setTS(i,'dragonActive',false);setTS(i,'heistActive',!c);renderTestPanels();}
-
-function testSubmit(idx){
-  const player=testPlayers[idx],cat=G.category,items=CAT_SETS[cat]||new Set();
-  const dragonOn=!!getTS(idx,'dragonActive'),heistOn=!!getTS(idx,'heistActive');
-  const dc=dragonOn?3:1,hc=heistOn?3:1;
-  const errEl=el(`te${idx}-err`);let hoards=[],snatches=[];
-  for(let i=0;i<dc;i++){const v=(el(`te${idx}-h${i}`)?.value||'').trim();if(!v){errEl.textContent=`Fill in hoard ${i+1}`;return;}if(!items.has(norm(v))){errEl.textContent=`"${v}" not in category`;return;}hoards.push(v);}
-  for(let i=0;i<hc;i++){const v=(el(`te${idx}-s${i}`)?.value||'').trim();if(!v){errEl.textContent=`Fill in snatch ${i+1}`;return;}if(!items.has(norm(v))){errEl.textContent=`"${v}" not in category`;return;}snatches.push(v);}
-  const hn=hoards.map(norm),sn=snatches.map(norm);
-  for(const h of hn)if(sn.includes(h)){errEl.textContent=`Can't hoard and snatch the same`;return;}
-  if(new Set([...hn,...sn]).size!==hn.length+sn.length){errEl.textContent=`Duplicate`;return;}
-  if(!G.submissions[G.currentRound])G.submissions[G.currentRound]={};
-  G.submissions[G.currentRound][player.id]={hoards,snatches,dragon:dragonOn,heist:heistOn};
-  if(dragonOn){player.dragonUsed=true;G.players[player.id].dragonUsed=true;}
-  if(heistOn){player.heistUsed=true;G.players[player.id].heistUsed=true;}
-  setTS(idx,'dragonActive',false);setTS(idx,'heistActive',false);
-  updateTestHeader();renderTestPanels();
-  // auto-advance to reveal if all submitted
-  if(testAllSubmitted())setTimeout(()=>testAction(),400);
+const BOT_NAMES=['Ghost','Shadow','Phantom','Raven','Viper','Cobra','Lynx','Wolf','Storm','Fox','Blaze','Dagger'];
+function addAIPlayer(){
+  if(!G)return;
+  const used=Object.values(G.players||{}).map(p=>p.name);
+  const name=BOT_NAMES.find(n=>!used.includes(n));
+  if(!name)return;
+  const botId='bot_'+uid();
+  aiPlayerIds.add(botId);
+  send({type:'join',playerId:botId,playerName:name});
 }
 
-function testAction(){
-  if(G.phase==='submitting'&&testAllSubmitted()){
-    G=testComputeScores(G);G.phase='revealing';G.revealStep=0;
-    isHost=true;revealedSteps=0;renderRevealScreen(G);
+function scheduleAISubmissions(){
+  const round=G.currentRound;
+  let delay=800;
+  aiPlayerIds.forEach(botId=>{
+    if(!G.players[botId])return;
+    delay+=600+Math.random()*700;
+    const d=delay;
+    setTimeout(()=>{
+      if(!G||G.phase!=='submitting'||G.currentRound!==round)return;
+      const items=(G.categoryItems||[]).slice(0,9);
+      const pool=items.slice().sort(()=>Math.random()-.5);
+      send({type:'submit',playerId:botId,hoards:[pool[0]],snatches:[pool[1]],dragon:false,heist:false});
+    },d);
+  });
+}
+
+function scheduleAIDraftPicks(){
+  let delay=700;
+  aiPlayerIds.forEach(botId=>{
+    if(!G||!G.draftOptions[botId])return;
+    delay+=500+Math.random()*800;
+    const d=delay;
+    setTimeout(()=>{
+      if(!G||G.phase!=='drafting'||G.draftPicks[botId])return;
+      const opts=G.draftOptions[botId]||[];
+      const pick=opts[~~(Math.random()*opts.length)];
+      if(pick)send({type:'draft_pick',playerId:botId,category:pick});
+    },d);
+  });
+}
+
+function renderDraft(state){
+  const myOpts=state.draftOptions[myId]||[];
+  const myPick=state.draftPicks?.[myId];
+  el('draft-card-title').textContent=myPick?`You chose: ${myPick}`:'Choose your category for the vault';
+  const optEl=el('draft-options');
+  optEl.innerHTML='';
+  myOpts.forEach(cat=>{
+    const chosen=myPick===cat;
+    const btn=document.createElement('button');
+    btn.className='draft-opt'+(chosen?' chosen':'');
+    btn.disabled=!!myPick;
+    btn.innerHTML=`<div class="draft-opt-name">${cat}</div>`;
+    if(!myPick)btn.addEventListener('click',()=>draftPick(cat));
+    optEl.appendChild(btn);
+  });
+  updateDraft(state);
+}
+
+function updateDraft(state){
+  const picks=state.draftPicks||{};
+  const myPick=picks[myId];
+  if(myPick){
+    el('draft-card-title').textContent=`You chose: ${myPick}`;
+    el('draft-options').querySelectorAll('.draft-opt').forEach(b=>{
+      b.disabled=true;
+      if(b.querySelector('.draft-opt-name')?.textContent===myPick)b.classList.add('chosen');
+    });
   }
-}
-
-function testComputeScores(state){
-  const round=state.currentRound,subs=state.submissions[round]||{},players=Object.keys(subs);
-  const allHoards={},allSnatches={};
-  players.forEach(pid=>{
-    (subs[pid].hoards||[]).forEach(h=>{const k=norm(h);if(!allHoards[k])allHoards[k]=[];allHoards[k].push(pid);});
-    (subs[pid].snatches||[]).forEach(s=>{const k=norm(s);if(!allSnatches[k])allSnatches[k]=[];allSnatches[k].push(pid);});
-  });
-  const pts={};players.forEach(pid=>{pts[pid]=0;});let roundCoins=0;
-  players.forEach(pid=>{
-    (subs[pid].hoards||[]).forEach(h=>{const k=norm(h),th=(allSnatches[k]||[]).filter(id=>id!==pid);if(th.length===0){pts[pid]+=COIN;roundCoins+=COIN;}});
-  });
-  players.forEach(pid=>{
-    (subs[pid].snatches||[]).forEach(s=>{const k=norm(s),ho=(allHoards[k]||[]).filter(id=>id!==pid);if(ho.length>0)pts[pid]+=COIN*ho.length;});
-  });
-  players.forEach(pid=>{if(state.players[pid])state.players[pid].score+=pts[pid];});
-  state.totalHoarded+=roundCoins;state.roundPoints[round]=pts;
-  const gm={};
-  Object.entries(allHoards).forEach(([t,pids])=>{const sz=pids.length;if(!gm[sz])gm[sz]=[];gm[sz].push({treasure:t,pids,snatchers:allSnatches[t]||[]});});
-  state.revealData[round]={allHoards,allSnatches,revealGroups:Object.keys(gm).map(Number).sort((a,b)=>a-b).flatMap(sz=>gm[sz])};
-  return state;
-}
-
-function renderTestPanels(){
-  el('test-panels').innerHTML=testPlayers.map((p,idx)=>{
-    const subs=G.submissions[G.currentRound]||{},submitted=!!subs[p.id];
-    const dragonOn=!!getTS(idx,'dragonActive'),heistOn=!!getTS(idx,'heistActive'),cat=G.category;
-    let content='';
-    if(submitted){
-      const sub=subs[p.id];
-      const bags=sub.hoards.map((h,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div class="dbag slam sz-md">${bagSVG(BAG_COLORS[i%BAG_COLORS.length],40)}</div><div style="font-size:9px;color:var(--muted);text-align:center;max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${h}</div></div>`).join('');
-      content=`<div class="submitted-banner" style="font-size:12px;">✦ Submitted<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">${bags}</div><div style="font-size:10px;color:var(--muted);margin-top:5px;">Snatch: ${sub.snatches.join(', ')||'—'}</div></div>`;
-    }else{
-      const dc=dragonOn?3:1,hc=heistOn?3:1;
-      content=`<div style="font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold);margin-bottom:4px;">${(G.players[p.id]?.score||0).toLocaleString()} coins</div>
-      <div style="font-size:13px;color:var(--text);background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;margin-bottom:10px;text-align:center;">${cat}</div>
-      <div class="power-row" style="gap:7px;margin:.5rem 0 .2rem;">
-        <button class="power-btn ${dragonOn?'dragon-on':''}" ${p.dragonUsed?'disabled':''} onclick="testToggleDragon(${idx})" style="padding:8px 6px;">
-          <div class="power-label">One-time</div><div class="power-name">Dragon's Hoard</div><div class="power-desc">Hoard 3</div>
-        </button>
-        <button class="power-btn ${heistOn?'heist-on':''}" ${p.heistUsed?'disabled':''} onclick="testToggleHeist(${idx})" style="padding:8px 6px;">
-          <div class="power-label">One-time</div><div class="power-name">Heist</div><div class="power-desc">Snatch 3</div>
-        </button>
-      </div>
-      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:.6rem 0 .3rem;">Hoard</div>
-      ${Array.from({length:dc},(_,i)=>`<div class="vi-wrap"><input type="text" id="te${idx}-h${i}" placeholder="Hoard..." autocomplete="off" oninput="tvali(this,'${cat}')"/><span class="vi">✓</span></div>`).join('')}
-      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:.6rem 0 .3rem;">Snatch</div>
-      ${Array.from({length:hc},(_,i)=>`<div class="vi-wrap"><input type="text" id="te${idx}-s${i}" placeholder="Snatch..." autocomplete="off" oninput="tvali(this,'${cat}')"/><span class="vi">✓</span></div>`).join('')}
-      <div class="error-msg" id="te${idx}-err"></div>
-      <button class="btn" style="margin-top:.6rem;" onclick="testSubmit(${idx})">Submit</button>`;
-    }
-    return `<div class="test-panel"><div class="test-panel-label">${p.name}${idx===0?'<span class="host-badge">HOST</span>':''}</div>${content}</div>`;
+  el('draft-picks-list').innerHTML=Object.entries(state.players).map(([id,p])=>{
+    const pick=picks[id];
+    return `<div class="draft-pick-row">
+      <div class="dot-pulse" style="background:${pick?'var(--success)':'var(--muted)'}"></div>
+      <span>${p.name}${id===myId?' (you)':''}</span>
+      ${pick?`<span class="pill gold">${pick}</span>`:'<span style="font-size:11px;color:var(--muted);margin-left:auto;">choosing…</span>'}
+    </div>`;
   }).join('');
 }
 
-function tvali(inp,cat){const w=inp.closest('.vi-wrap');if(w)w.classList.toggle('valid',!!(inp.value.trim()&&isValidAnswer(cat,inp.value)));}
-
-function initHomeBags(){
-  const ctr=el('home-bags');if(!ctr)return;
-  [0,1,2].forEach(i=>{const w=document.createElement('div');w.className='dbag sz-lg';w.style.animationDelay=`${i*.4}s`;w.innerHTML=bagSVG(BAG_COLORS[i],52);ctr.appendChild(w);});
+function draftPick(cat){
+  if(!G||G.phase!=='drafting'||G.draftPicks?.[myId])return;
+  send({type:'draft_pick',playerId:myId,category:cat});
 }
 
-initHomeBags();
+
+function initHomeSnatching(){
+  const ctr=el('home-bags');if(!ctr)return;
+  ctr.style.cssText='position:relative;width:260px;height:160px;overflow:hidden;margin:0 auto 1.5rem;';
+
+  const bagEl=document.createElement('div');
+  bagEl.style.cssText='position:absolute;left:50%;bottom:8px;transform:translateX(-50%);';
+  bagEl.innerHTML=bagSVG(BAG_COLORS[0],68);
+  ctr.appendChild(bagEl);
+
+  const handEl=document.createElement('div');
+  const handW=120;
+  handEl.style.cssText=`position:absolute;top:0;pointer-events:none;width:${handW}px;`;
+  handEl.innerHTML=handSVG(handW);
+  ctr.appendChild(handEl);
+
+  const grabLeft=70;
+  const grabRight=70;
+  let fromLeft=true, colorIdx=0;
+
+  function doSnatch(){
+    colorIdx=(colorIdx+1)%BAG_COLORS.length;
+    bagEl.style.transition='none';
+    bagEl.style.opacity='1';
+    bagEl.style.transform='translate(-50%,-50%) scale(1) rotate(0)';
+    bagEl.innerHTML=bagSVG(BAG_COLORS[colorIdx],68);
+
+    /* Position hand offscreen on approaching side */
+    if(fromLeft){
+      handEl.style.transition='none';
+      handEl.style.transform='none';
+      handEl.style.left='-95px';handEl.style.right='auto';
+    } else {
+      handEl.style.transition='none';
+      handEl.style.transform='scaleX(-1)';
+      handEl.style.right='-95px';handEl.style.left='auto';
+    }
+
+    /* Slide hand in */
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      if(fromLeft){handEl.style.transition='left .85s cubic-bezier(.2,.8,.3,1)';handEl.style.left=grabLeft+'px';}
+      else{handEl.style.transition='right .85s cubic-bezier(.2,.8,.3,1)';handEl.style.right=grabRight+'px';}
+    }));
+
+    /* Grab: bag shrinks into hand */
+    setTimeout(()=>{
+      bagEl.style.transition='transform .22s ease, opacity .22s ease';
+      bagEl.style.transform='translate(-50%,-50%) scale(0.65)';
+      bagEl.style.opacity='0';
+    },880);
+
+    /* Hand exits carrying bag */
+    setTimeout(()=>{
+      const ease='cubic-bezier(.55,0,1,.7)';
+      if(fromLeft){handEl.style.transition=`left .55s ${ease}`;handEl.style.left='290px';}
+      else{handEl.style.transition=`right .55s ${ease}`;handEl.style.right='290px';}
+    },1120);
+
+    setTimeout(()=>{fromLeft=!fromLeft;doSnatch();},2800);
+  }
+
+  setTimeout(doSnatch,500);
+}
+
+initHomeSnatching();
+
+// Expose functions used by inline onclick= handlers in HTML
+Object.assign(window,{createGame,joinGame,copyCode,addAIPlayer,startGame,
+  toggleDragon,toggleHeist,submitMove,sendRevealNext,nextRound,resetToHome,rematch});
 </script>
 </body>
 </html>
